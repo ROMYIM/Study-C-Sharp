@@ -5,8 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\Protos\greet.proto" GrpcServices="Server" Link="Protos\greet.proto"/>
+    <Protobuf Include="..\Protos\greet.proto" GrpcServices="Server" Link="Protos\greet.proto" />
     <Protobuf Include="..\Protos\api.proto" GrpcServices="Server" Link="Protos\api.proto" />
+    <Protobuf Include="..\Protos\authentication.proto" GrpcServices="Server" Link="Protos\authentication.proto" />
+    <Protobuf Include="..\Protos\common.proto" GrpcServices="Server" Link="Protos\common.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,6 +18,10 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Grpc.HttpApi" Version="0.1.0-alpha.20580.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
 </Project>

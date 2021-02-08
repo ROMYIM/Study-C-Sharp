@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+import "common.proto";
+
+package auth;
+
+service Authenticatior {
+    rpc Authenticate (Identity) returns (common.Response);
+}
+
+message Identity {
+    string id = 1;
+    string userName = 2;
+    string password = 3;
+    Role role = 4;
+}
+
+message Role {
+    string id = 1;
+    string name = 2;
+    repeated bool queryPermissions = 3;
+    repeated bool editPermissions = 4;
+}

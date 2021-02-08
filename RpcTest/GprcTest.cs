@@ -29,7 +29,7 @@ namespace RpcTest
         //Given
             var request = new Greet.GoodByeRequest
             {
-                Name = "YIM",
+                Name = "yim",
                 Message = "Good bye!  You are so handsome"
             };
         //When
