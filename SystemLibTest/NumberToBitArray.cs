@@ -7,7 +7,7 @@ namespace SystemLibTest
     public class BitArrayTest
     {
 
-        private const int Number = 3748273482738429;
+        private const int Number = 374827343;
 
         [Fact]
         public void NumberToBitArrayTest()

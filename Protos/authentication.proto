@@ -18,6 +18,6 @@ message Identity {
 message Role {
     string id = 1;
     string name = 2;
-    repeated bool queryPermissions = 3;
-    repeated bool editPermissions = 4;
+    repeated int32 queryPermissions = 3;
+    repeated int32 editPermissions = 4;
 }

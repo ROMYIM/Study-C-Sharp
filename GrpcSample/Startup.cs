@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Identity.Repositories;
 using GrpcSample.RemoteServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,6 +18,11 @@ namespace GrpcSample
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<UserRepository>();
+            services.AddGrpcClient<Greet.Greeter.GreeterClient>(name:"greeter", opions => 
+            {
+                opions.Address = new Uri("https://localhost:5001");
+            });
             services.AddGrpc();
             services.AddGrpcHttpApi();
             services.AddControllers();

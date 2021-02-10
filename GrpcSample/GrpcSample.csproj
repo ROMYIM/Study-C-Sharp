@@ -5,10 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\Protos\greet.proto" GrpcServices="Server" Link="Protos\greet.proto" />
-    <Protobuf Include="..\Protos\api.proto" GrpcServices="Server" Link="Protos\api.proto" />
-    <Protobuf Include="..\Protos\authentication.proto" GrpcServices="Server" Link="Protos\authentication.proto" />
-    <Protobuf Include="..\Protos\common.proto" GrpcServices="Server" Link="Protos\common.proto" />
+    <Protobuf Include="..\Protos\greet.proto" GrpcServices="Both" Link="Protos\greet.proto" />
+    <Protobuf Include="..\Protos\api.proto" GrpcServices="Both" Link="Protos\api.proto" />
+    <Protobuf Include="..\Protos\authentication.proto" GrpcServices="Both" Link="Protos\authentication.proto" />
+    <Protobuf Include="..\Protos\common.proto" GrpcServices="Both" Link="Protos\common.proto" />
   </ItemGroup>
 
   <ItemGroup>

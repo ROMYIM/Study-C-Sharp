@@ -1,11 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.14.0" />
     <PackageReference Include="Grpc.Net.Client" Version="2.35.0" />
@@ -23,8 +21,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-
-    <Protobuf Include="..\Protos\greet.proto" GrpcServices="Client" Link="Protos\greet.proto" />
   </ItemGroup>
-
+  <ItemGroup>
+    <Protobuf Include="..\Protos\greet.proto" GrpcServices="Client" Link="Protos\greet.proto" />
+    <Protobuf Include="..\Protos\authentication.proto" GrpcServices="Client" Link="Protos\authentication.proto" />
+    <Protobuf Include="..\Protos\common.proto" GrpcServices="Client" Link="Protos\common.proto" />
+  </ItemGroup>
 </Project>
