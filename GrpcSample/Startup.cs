@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Identity.Repositories;
-using GrpcSample.RemoteServices;
+using GrpcSample.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -40,9 +40,9 @@ namespace GrpcSample
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<GreeterService>();
-                endpoints.MapGrpcService<UserService>();
-                endpoints.MapGrpcService<AuthenticationService>();
+                endpoints.MapGrpcService<GreeterController>();
+                endpoints.MapGrpcService<UserController>();
+                endpoints.MapGrpcService<AuthenticationController>();
 
                 endpoints.MapControllers();
                 // endpoints.MapGet("/", async context =>

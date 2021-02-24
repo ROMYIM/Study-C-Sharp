@@ -7,15 +7,15 @@ using Domain.Identity.Repositories;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 
-namespace GrpcSample.RemoteServices
+namespace GrpcSample.Controllers
 {
-    public class AuthenticationService : Auth.Authenticatior.AuthenticatiorBase
+    public class AuthenticationController : Auth.Authenticatior.AuthenticatiorBase
     {
         private readonly ILogger _logger;
 
         private readonly UserRepository _userRepository;
 
-        public AuthenticationService(ILoggerFactory loggerFactory, UserRepository userRepository)
+        public AuthenticationController(ILoggerFactory loggerFactory, UserRepository userRepository)
         {
             _logger = loggerFactory.CreateLogger(GetType());
             _userRepository = userRepository;

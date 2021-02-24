@@ -3,13 +3,13 @@ using Api;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 
-namespace GrpcSample.RemoteServices
+namespace GrpcSample.Controllers
 {
-    public class UserService : Api.User.UserBase
+    public class UserController : Api.User.UserBase
     {
         private readonly ILogger _logger;
 
-        public UserService(ILoggerFactory loggerFactory)
+        public UserController(ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger(GetType());
         }

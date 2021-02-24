@@ -6,12 +6,12 @@ using Greet;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 
-namespace GrpcSample.RemoteServices
+namespace GrpcSample.Controllers
 {
-    public class GreeterService : Greet.Greeter.GreeterBase
+    public class GreeterController : Greet.Greeter.GreeterBase
     {
-        private readonly ILogger<GreeterService> _logger;
-        public GreeterService(ILogger<GreeterService> logger)
+        private readonly ILogger<GreeterController> _logger;
+        public GreeterController(ILogger<GreeterController> logger)
         {
             _logger = logger;
         }
