@@ -2,6 +2,8 @@ using System.Threading.Tasks;
 using Api;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
+using Domain.Identity.Repositories;
+using Domain.Identity.Entities;
 
 namespace GrpcSample.Controllers
 {
@@ -9,9 +11,12 @@ namespace GrpcSample.Controllers
     {
         private readonly ILogger _logger;
 
-        public UserController(ILoggerFactory loggerFactory)
+        private readonly UserRepository _userRepository;
+
+        public UserController(ILoggerFactory loggerFactory, UserRepository userRepository)
         {
             _logger = loggerFactory.CreateLogger(GetType());
+            _userRepository = userRepository;
         }
 
         public override Task<LoginReply> SignIn(LoginRequest request, ServerCallContext context)
@@ -21,6 +26,12 @@ namespace GrpcSample.Controllers
 
             _logger.LogInformation(userId);
             _logger.LogInformation(password);
+
+            var user = _userRepository.GetUser(userId);
+
+            var httpContext = context.GetHttpContext();
+            
+            
 
             var loginReply = new LoginReply
             {

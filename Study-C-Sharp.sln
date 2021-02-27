@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemLibTest", "SystemLibT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{53CE9498-FC5C-4C57-BC3B-870747B58015}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiddleWareSample", "MiddleWareSample\MiddleWareSample.csproj", "{6D21C5FA-3B7D-4822-8F0A-7CDBB1F2D60B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,5 +88,17 @@ Global
 		{53CE9498-FC5C-4C57-BC3B-870747B58015}.Release|x64.Build.0 = Release|Any CPU
 		{53CE9498-FC5C-4C57-BC3B-870747B58015}.Release|x86.ActiveCfg = Release|Any CPU
 		{53CE9498-FC5C-4C57-BC3B-870747B58015}.Release|x86.Build.0 = Release|Any CPU
+		{6D21C5FA-3B7D-4822-8F0A-7CDBB1F2D60B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D21C5FA-3B7D-4822-8F0A-7CDBB1F2D60B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D21C5FA-3B7D-4822-8F0A-7CDBB1F2D60B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6D21C5FA-3B7D-4822-8F0A-7CDBB1F2D60B}.Debug|x64.Build.0 = Debug|Any CPU
+		{6D21C5FA-3B7D-4822-8F0A-7CDBB1F2D60B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6D21C5FA-3B7D-4822-8F0A-7CDBB1F2D60B}.Debug|x86.Build.0 = Debug|Any CPU
+		{6D21C5FA-3B7D-4822-8F0A-7CDBB1F2D60B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D21C5FA-3B7D-4822-8F0A-7CDBB1F2D60B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D21C5FA-3B7D-4822-8F0A-7CDBB1F2D60B}.Release|x64.ActiveCfg = Release|Any CPU
+		{6D21C5FA-3B7D-4822-8F0A-7CDBB1F2D60B}.Release|x64.Build.0 = Release|Any CPU
+		{6D21C5FA-3B7D-4822-8F0A-7CDBB1F2D60B}.Release|x86.ActiveCfg = Release|Any CPU
+		{6D21C5FA-3B7D-4822-8F0A-7CDBB1F2D60B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
