@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Infrastructure.Converters;
 
 namespace MiddleWareSample
 {
@@ -27,7 +28,7 @@ namespace MiddleWareSample
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter()));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MiddleWareSample", Version = "v1" });
@@ -35,8 +36,10 @@ namespace MiddleWareSample
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+            var logger = loggerFactory.CreateLogger(GetType());
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -49,6 +52,18 @@ namespace MiddleWareSample
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.Use(next => 
+            {
+                return async context =>
+                {
+                    logger.LogInformation("执行前");
+
+                    await next(context);
+
+                    logger.LogInformation("执行后");
+                };
+            });
 
             app.UseEndpoints(endpoints =>
             {
