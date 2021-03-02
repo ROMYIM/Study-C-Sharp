@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Infrastructure.Converters;
+using MiddleWareSample.MiddleWares;
 
 namespace MiddleWareSample
 {
@@ -27,7 +28,7 @@ namespace MiddleWareSample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddSingleton<ClientIpMiddleWare>();
             services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter()));
             services.AddSwaggerGen(c =>
             {
@@ -49,11 +50,13 @@ namespace MiddleWareSample
 
             app.UseHttpsRedirection();
 
+            app.UseMiddleware<ClientIpMiddleWare>();
+
             app.UseRouting();
 
             app.UseAuthorization();
 
-            app.Use(next => 
+            app.Map("/test", app => app.Use(next => 
             {
                 return async context =>
                 {
@@ -63,7 +66,7 @@ namespace MiddleWareSample
 
                     logger.LogInformation("执行后");
                 };
-            });
+            }));
 
             app.UseEndpoints(endpoints =>
             {
