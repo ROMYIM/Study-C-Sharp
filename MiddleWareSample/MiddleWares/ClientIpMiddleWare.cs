@@ -27,7 +27,10 @@ namespace MiddleWareSample.MiddleWares
 
             await next(context);
 
-            _logger.LogInformation("计数：{}", Interlocked.Add(ref index, step));
+            var currentIndex = Interlocked.Add(ref index, step);
+            _logger.LogInformation("计数：{}", currentIndex);
+
+            await context.Response.WriteAsync(currentIndex.ToString());
         }
     }
 }
