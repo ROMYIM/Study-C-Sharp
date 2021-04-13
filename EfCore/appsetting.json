@@ -1,0 +1,5 @@
+{
+    "ConnectionStrings":{
+        "pgsql": "Host=localhost;Port=5432;Username=yim;Database=configuration;Password=;"
+    }
+}

@@ -5,6 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": ".NET Core EfCore (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/EfCore/bin/Debug/net5.0/EfCore.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
+        {
             "name": ".NET Core ConfigurationDemo (web)",
             "type": "coreclr",
             "request": "launch",
