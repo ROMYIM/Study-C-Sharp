@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationDemo", "Config
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfCore", "EfCore\EfCore.csproj", "{1793B371-7246-4EE8-8CFC-B31FDAD38BC8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NettyDemo", "NettyDemo\NettyDemo.csproj", "{C5E556D3-D9DB-4937-A664-F398C2FAF139}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -170,5 +172,17 @@ Global
 		{1793B371-7246-4EE8-8CFC-B31FDAD38BC8}.Release|x64.Build.0 = Release|Any CPU
 		{1793B371-7246-4EE8-8CFC-B31FDAD38BC8}.Release|x86.ActiveCfg = Release|Any CPU
 		{1793B371-7246-4EE8-8CFC-B31FDAD38BC8}.Release|x86.Build.0 = Release|Any CPU
+		{C5E556D3-D9DB-4937-A664-F398C2FAF139}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5E556D3-D9DB-4937-A664-F398C2FAF139}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5E556D3-D9DB-4937-A664-F398C2FAF139}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C5E556D3-D9DB-4937-A664-F398C2FAF139}.Debug|x64.Build.0 = Debug|Any CPU
+		{C5E556D3-D9DB-4937-A664-F398C2FAF139}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C5E556D3-D9DB-4937-A664-F398C2FAF139}.Debug|x86.Build.0 = Debug|Any CPU
+		{C5E556D3-D9DB-4937-A664-F398C2FAF139}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5E556D3-D9DB-4937-A664-F398C2FAF139}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5E556D3-D9DB-4937-A664-F398C2FAF139}.Release|x64.ActiveCfg = Release|Any CPU
+		{C5E556D3-D9DB-4937-A664-F398C2FAF139}.Release|x64.Build.0 = Release|Any CPU
+		{C5E556D3-D9DB-4937-A664-F398C2FAF139}.Release|x86.ActiveCfg = Release|Any CPU
+		{C5E556D3-D9DB-4937-A664-F398C2FAF139}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
