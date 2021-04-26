@@ -1,6 +1,5 @@
 using DotNetty.Transport.Channels;
-using NettyDemo.Infrastructure.Db;
-using NettyDemo.Infrastructure.Db.Models;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -9,30 +8,26 @@ namespace NettyDemo.Controllers.ChannelHandlers
 {
     public class LoginHandler : ChannelHandlerAdapter
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IMemoryCache _cache;
 
-        public LoginHandler(ApplicationDbContext dbContext)
+        public LoginHandler(IMemoryCache memoryCache)
         {
-            _dbContext = dbContext;
+            _cache = memoryCache;
         }
 
-        public override async Task ConnectAsync(IChannelHandlerContext context, EndPoint remoteAddress, EndPoint localAddress)
+        public override Task ConnectAsync(IChannelHandlerContext context, EndPoint remoteAddress, EndPoint localAddress)
         {
             var endPoint = remoteAddress as IPEndPoint;
             var host = endPoint.ToString();
-            var client = new Client
-            {
-                Host = host,
-                LatestSigninTime = DateTimeOffset.Now
-            };
-            _dbContext.Add(client);
-            await _dbContext.SaveChangesAsync();
-            await base.ConnectAsync(context, remoteAddress, localAddress);
+            _cache.Set<IChannelHandlerContext>(host, context);
+            return base.ConnectAsync(context, remoteAddress, localAddress);
         }
 
         public override Task DisconnectAsync(IChannelHandlerContext context)
         {
-
+            var endPoint = context.Channel.RemoteAddress as IPEndPoint;
+            var key = endPoint.ToString();
+            _cache.Remove(key);
             return base.DisconnectAsync(context);
         }
     }

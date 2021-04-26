@@ -31,6 +31,7 @@ namespace NettyDemo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<LoginHandler>();
             services.AddNettyService((services, bootstrap) => 
             {
                 var dispatcher = new DispatcherEventLoopGroup();
@@ -54,7 +55,14 @@ namespace NettyDemo
                     pipeline.AddLast("ACCEPT-CONN", loginHandler);
 
                 }));
+
+                bootstrap.ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
+                {
+                    var pipeline = channel.Pipeline;
+                    // pipeline.AddLast
+                }));
             });
+            services.AddMemoryCache();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

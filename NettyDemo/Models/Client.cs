@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace NettyDemo.Infrastructure.Db.Models
+namespace NettyDemo.Models
 {
     [Table("Client")]
     public class Client

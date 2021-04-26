@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using NettyDemo.Infrastructure.Db.Models;
+using NettyDemo.Models;
 
 namespace NettyDemo.Infrastructure.Db
 {

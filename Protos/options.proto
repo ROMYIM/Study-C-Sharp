@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package configuration;
+
+message Options {
+
+    string id = 1;
+
+    string type = 2;
+
+    
+}
