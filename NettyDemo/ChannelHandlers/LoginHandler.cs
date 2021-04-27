@@ -4,7 +4,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace NettyDemo.Controllers.ChannelHandlers
+namespace NettyDemo.ChannelHandlers
 {
     public class LoginHandler : ChannelHandlerAdapter
     {

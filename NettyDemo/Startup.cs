@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DotNetty.Codecs.Protobuf;
 using DotNetty.Handlers.Logging;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Libuv;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using NettyDemo.Controllers.ChannelHandlers;
+using NettyDemo.ChannelHandlers;
 using NettyDemo.Infrastructure.Extensions;
 
 namespace NettyDemo
@@ -32,6 +33,7 @@ namespace NettyDemo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<LoginHandler>();
+            services.AddSingleton<PushMessageHandler>();
             services.AddNettyService((services, bootstrap) => 
             {
                 var dispatcher = new DispatcherEventLoopGroup();
@@ -56,10 +58,16 @@ namespace NettyDemo
 
                 }));
 
+                var pushMessageHandler = services.GetRequiredService<PushMessageHandler>();
                 bootstrap.ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
                 {
                     var pipeline = channel.Pipeline;
-                    // pipeline.AddLast
+                    pipeline.AddLast(new ProtobufVarint32FrameDecoder());
+                    pipeline.AddLast(new ProtobufDecoder(Models.Options.Parser));
+                    pipeline.AddLast(new ProtobufVarint32FrameDecoder());
+                    pipeline.AddLast(new ProtobufEncoder());
+
+                    pipeline.AddLast(businessGroup, pushMessageHandler);
                 }));
             });
             services.AddMemoryCache();
