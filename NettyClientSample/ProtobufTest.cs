@@ -39,13 +39,24 @@ namespace NettyClientSample
             });
         //When
             var channel = await _client.ConnectAsync(IPEndPoint.Parse("127.0.0.1:8087"));
-            await channel.WriteAndFlushAsync(new Models.Options
+            for (int i = 0; i < 3; i++)
             {
-                Id = "1",
-                Type = "PostTyp"
-            });
+                await channel.WriteAndFlushAsync(new Models.Options
+                {
+                    Id = "1",
+                    Type = "PostTyp"
+                });
+
+                await Task.Delay(TimeSpan.FromMinutes(1));
+
+                await channel.WriteAndFlushAsync(new Models.Options
+                {
+                    Id = "2",
+                    Type = "PostTyp"
+                });
+            }
         //Then
-            Assert.Equal(channel.RemoteAddress, IPEndPoint.Parse("127.0.0.1:8087"));
+            await channel.CloseAsync();
         }
     }
 }
