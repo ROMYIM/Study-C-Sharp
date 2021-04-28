@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
 namespace NettyDemo.Controllers
@@ -18,9 +19,12 @@ namespace NettyDemo.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        private readonly IMemoryCache _cache;
+
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IMemoryCache cache)
         {
             _logger = logger;
+            _cache = cache;
         }
 
         [HttpGet]
@@ -34,6 +38,19 @@ namespace NettyDemo.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet]
+        public Models.Options PushMessage()
+        {
+            var options = new Models.Options
+            {
+                Id = "1",
+                Type = "PostType"
+            };
+
+            
+            return options;
         }
     }
 }

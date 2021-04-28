@@ -13,6 +13,14 @@ namespace NettyDemo.ChannelHandlers
         {
             _logger = loggerFactory.CreateLogger(GetType());
         }
+
+        public override void ChannelRead(IChannelHandlerContext context, object message)
+        {
+            var clientHost = context.Channel.RemoteAddress.ToString();
+            _logger.LogInformation("客户端{}发送消息{}", clientHost, message);
+            base.ChannelRead(context, message);
+        }
+
         
         public override Task WriteAsync(IChannelHandlerContext context, object message)
         {

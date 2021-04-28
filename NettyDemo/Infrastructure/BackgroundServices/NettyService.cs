@@ -33,7 +33,7 @@ namespace NettyDemo.Infrastructure.BackgroundServices
 
             ConfigureServerBootstrap(_services, _bootStrap);
             
-            _bootStrapChannel = await _bootStrap.BindAsync(IPAddress.Loopback, 8087);
+            _bootStrapChannel = await _bootStrap.BindAsync(IPAddress.Parse("127.0.0.1"), 8087);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
