@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NettyDemo", "NettyDemo\Nett
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NettyClientSample", "NettyClientSample\NettyClientSample.csproj", "{2087D004-5695-4684-B7A5-608946FD3765}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NettyClientDemo", "NettyClientDemo\NettyClientDemo.csproj", "{3A13585C-EBA4-4C88-BAF0-A81FEFA841A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -198,5 +200,17 @@ Global
 		{2087D004-5695-4684-B7A5-608946FD3765}.Release|x64.Build.0 = Release|Any CPU
 		{2087D004-5695-4684-B7A5-608946FD3765}.Release|x86.ActiveCfg = Release|Any CPU
 		{2087D004-5695-4684-B7A5-608946FD3765}.Release|x86.Build.0 = Release|Any CPU
+		{3A13585C-EBA4-4C88-BAF0-A81FEFA841A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A13585C-EBA4-4C88-BAF0-A81FEFA841A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A13585C-EBA4-4C88-BAF0-A81FEFA841A8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3A13585C-EBA4-4C88-BAF0-A81FEFA841A8}.Debug|x64.Build.0 = Debug|Any CPU
+		{3A13585C-EBA4-4C88-BAF0-A81FEFA841A8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3A13585C-EBA4-4C88-BAF0-A81FEFA841A8}.Debug|x86.Build.0 = Debug|Any CPU
+		{3A13585C-EBA4-4C88-BAF0-A81FEFA841A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A13585C-EBA4-4C88-BAF0-A81FEFA841A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A13585C-EBA4-4C88-BAF0-A81FEFA841A8}.Release|x64.ActiveCfg = Release|Any CPU
+		{3A13585C-EBA4-4C88-BAF0-A81FEFA841A8}.Release|x64.Build.0 = Release|Any CPU
+		{3A13585C-EBA4-4C88-BAF0-A81FEFA841A8}.Release|x86.ActiveCfg = Release|Any CPU
+		{3A13585C-EBA4-4C88-BAF0-A81FEFA841A8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

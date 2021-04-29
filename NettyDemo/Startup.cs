@@ -35,8 +35,8 @@ namespace NettyDemo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IKeyValueCache<string, IChannel>, ChannelCache>();
-            services.AddSingleton<LoginHandler>();
-            services.AddSingleton<PushMessageHandler>();
+            services.AddTransient<LoginHandler>();
+            services.AddTransient<PushMessageHandler>();
             services.AddNettyService((services, bootstrap) => 
             {
                 var dispatcher = new DispatcherEventLoopGroup();
@@ -52,16 +52,14 @@ namespace NettyDemo
                 bootstrap.Option(ChannelOption.SoReuseaddr, true); // 允许重复使用本地地址和端口
                 bootstrap.Option(ChannelOption.SoKeepalive, true); // 如果在两小时内没有数据的通信时，TCP会自动发送一个活动探测数据报文
 
-                var loginHandler = services.GetRequiredService<LoginHandler>();
                 bootstrap.Handler(new ActionChannelInitializer<IChannel>(channel =>
                 {
                     var pipeline = channel.Pipeline;
                     pipeline.AddLast("ACCEPT-LOG", new LoggingHandler());
-                    pipeline.AddLast("ACCEPT-CONN", loginHandler);
+                    pipeline.AddLast("ACCEPT-CONN", services.GetRequiredService<LoginHandler>());
 
                 }));
 
-                var pushMessageHandler = services.GetRequiredService<PushMessageHandler>();
                 bootstrap.ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
                 {
                     var pipeline = channel.Pipeline;
@@ -70,7 +68,7 @@ namespace NettyDemo
                     pipeline.AddLast(new ProtobufVarint32FrameDecoder());
                     pipeline.AddLast(new ProtobufEncoder());
 
-                    pipeline.AddLast(businessGroup, pushMessageHandler);
+                    pipeline.AddLast(businessGroup, services.GetRequiredService<PushMessageHandler>());
                 }));
             });
 
@@ -93,7 +91,7 @@ namespace NettyDemo
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "NettyDemo v1"));
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
 

@@ -1,12 +1,47 @@
 ﻿using System;
+using System.Net;
+using System.Threading.Tasks;
+using DotNetty.Codecs.Protobuf;
+using DotNetty.Transport.Channels;
+using DotNetty.Transport.Channels.Sockets;
+using NettyClientDemo.Handlers;
 
 namespace NettyClientDemo
 {
     class Program
     {
+        private static NettyClient _client = new NettyClient(bootstrap =>
+            {
+                var group = new MultithreadEventLoopGroup();
+
+                bootstrap
+                .Group(group)
+                .Channel<TcpSocketChannel>()
+                .Option(ChannelOption.TcpNodelay, true)
+                .Option(ChannelOption.ConnectTimeout, TimeSpan.FromMilliseconds(500))
+                .Handler(new ActionChannelInitializer<IChannel>(channel =>
+                {
+                    var pipeline = channel.Pipeline;
+
+                    pipeline.AddLast(new ProtobufVarint32FrameDecoder());
+                    pipeline.AddLast(new ProtobufDecoder(Models.Options.Parser));
+                    pipeline.AddLast(new ProtobufVarint32LengthFieldPrepender());
+                    pipeline.AddLast(new ProtobufEncoder());
+                    pipeline.AddLast(new ReceiveMessageHandler());
+                }));
+            });
+
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            System.Console.WriteLine("客户端启动");
+            Task.Run(async () =>
+            {
+                var channel = await  _client.ConnectAsync(IPEndPoint.Parse("127.0.0.1:8087"));
+
+            
+
+                await channel.CloseAsync();
+            }).Wait();
         }
     }
 }
