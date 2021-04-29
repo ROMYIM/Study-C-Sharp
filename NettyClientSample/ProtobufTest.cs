@@ -11,13 +11,7 @@ namespace NettyClientSample
 {
     public class ProtobufTest
     {
-        private NettyClient _client;
-
-        [Fact]
-        public async Task ConnectionTest()
-        {
-        //Given
-            _client = new NettyClient(bootstrap =>
+        private NettyClient _client = new NettyClient(bootstrap =>
             {
                 var group = new MultithreadEventLoopGroup();
 
@@ -37,6 +31,12 @@ namespace NettyClientSample
                     pipeline.AddLast(new ReceiveMessageHandler());
                 }));
             });
+
+        [Fact]
+        public async Task SendMessageTest()
+        {
+        //Given
+            
         //When
             var channel = await _client.ConnectAsync(IPEndPoint.Parse("127.0.0.1:8087"));
             for (int i = 0; i < 3; i++)
@@ -57,6 +57,23 @@ namespace NettyClientSample
             }
         //Then
             await channel.CloseAsync();
+        }
+
+        [Fact]
+        public async Task ReadMessageTest()
+        {
+        //Given
+           
+        //When
+            var channel = await _client.ConnectAsync(IPEndPoint.Parse("127.0.0.1:8087"));
+            channel.Read();
+
+            
+
+            await Task.Delay(TimeSpan.FromMinutes(5));
+
+            await channel.CloseAsync();
+        //Then
         }
     }
 }

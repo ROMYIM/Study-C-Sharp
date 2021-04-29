@@ -16,6 +16,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using NettyDemo.ChannelHandlers;
+using NettyDemo.Infrastructure.Caches;
+using NettyDemo.Infrastructure.Caches.Abbractions;
 using NettyDemo.Infrastructure.Extensions;
 
 namespace NettyDemo
@@ -32,6 +34,7 @@ namespace NettyDemo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IKeyValueCache<string, IChannel>, ChannelCache>();
             services.AddSingleton<LoginHandler>();
             services.AddSingleton<PushMessageHandler>();
             services.AddNettyService((services, bootstrap) => 
@@ -70,6 +73,8 @@ namespace NettyDemo
                     pipeline.AddLast(businessGroup, pushMessageHandler);
                 }));
             });
+
+
             services.AddMemoryCache();
             services.AddControllers();
             services.AddSwaggerGen(c =>

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DotNetty.Transport.Channels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using NettyDemo.Infrastructure.Caches.Abbractions;
 
 namespace NettyDemo.Controllers
 {
@@ -19,12 +20,12 @@ namespace NettyDemo.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        private readonly IMemoryCache _cache;
+        private readonly IKeyValueCache<string, IChannel> _channelCache;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IMemoryCache cache)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IKeyValueCache<string, IChannel> channelCache)
         {
             _logger = logger;
-            _cache = cache;
+            _channelCache = channelCache;
         }
 
         [HttpGet]
@@ -41,16 +42,29 @@ namespace NettyDemo.Controllers
         }
 
         [HttpGet]
-        public Models.Options PushMessage()
+        [Route("message")]
+        public async Task<Models.Options> PushMessage()
         {
             var options = new Models.Options
             {
-                Id = "1",
+                Id = Guid.NewGuid().ToString(),
                 Type = "PostType"
             };
 
-            
+            var channels = _channelCache.Values;
+            foreach (var channel in channels)
+            {
+                await channel.WriteAndFlushAsync(options);
+            }
+
             return options;
+        }
+
+        [Route("host")]
+        public IEnumerable<string> ChannelHosts()
+        {
+            var hosts = _channelCache.Keys;
+            return hosts;
         }
     }
 }

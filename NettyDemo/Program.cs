@@ -11,7 +11,6 @@ namespace NettyDemo
 {
     public class Program
     {
-        private IConfiguration _configuration;
 
         public static void Main(string[] args)
         {
