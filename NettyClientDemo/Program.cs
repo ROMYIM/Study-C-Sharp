@@ -17,31 +17,31 @@ namespace NettyClientDemo
                 bootstrap
                 .Group(group)
                 .Channel<TcpSocketChannel>()
-                .Option(ChannelOption.TcpNodelay, true)
+                // .Option(ChannelOption.TcpNodelay, true)
+                .Option(ChannelOption.AutoRead, true)
                 .Option(ChannelOption.ConnectTimeout, TimeSpan.FromMilliseconds(500))
                 .Handler(new ActionChannelInitializer<IChannel>(channel =>
                 {
                     var pipeline = channel.Pipeline;
 
                     pipeline.AddLast(new ProtobufVarint32FrameDecoder());
-                    pipeline.AddLast(new ProtobufDecoder(Models.Options.Parser));
+                    pipeline.AddLast(new MyProtoBufDecoder(Models.Options.Parser));
+                    // pipeline.AddLast(new ProtobufVarint32FrameDecoder());
                     pipeline.AddLast(new ProtobufVarint32LengthFieldPrepender());
                     pipeline.AddLast(new ProtobufEncoder());
+
                     pipeline.AddLast(new ReceiveMessageHandler());
                 }));
             });
 
-        static void Main(string[] args)
+        async static Task Main(string[] args)
         {
             System.Console.WriteLine("客户端启动");
-            Task.Run(async () =>
-            {
-                var channel = await  _client.ConnectAsync(IPEndPoint.Parse("127.0.0.1:8087"));
+            var channel = await  _client.ConnectAsync(IPEndPoint.Parse("127.0.0.1:8087"));
 
-            
+            await Task.Delay(TimeSpan.FromMinutes(5));
 
-                await channel.CloseAsync();
-            }).Wait();
+            await channel.CloseAsync();
         }
     }
 }

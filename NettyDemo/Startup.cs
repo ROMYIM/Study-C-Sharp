@@ -65,7 +65,7 @@ namespace NettyDemo
                     var pipeline = channel.Pipeline;
                     pipeline.AddLast(new ProtobufVarint32FrameDecoder());
                     pipeline.AddLast(new ProtobufDecoder(Models.Options.Parser));
-                    pipeline.AddLast(new ProtobufVarint32FrameDecoder());
+                    pipeline.AddLast(new ProtobufVarint32LengthFieldPrepender());
                     pipeline.AddLast(new ProtobufEncoder());
 
                     pipeline.AddLast(businessGroup, services.GetRequiredService<PushMessageHandler>());

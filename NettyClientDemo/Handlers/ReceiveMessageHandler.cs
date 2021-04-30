@@ -1,5 +1,6 @@
 using DotNetty.Transport.Channels;
 using Models;
+using System;
 using System.Net;
 
 namespace NettyClientDemo.Handlers
@@ -13,6 +14,19 @@ namespace NettyClientDemo.Handlers
             System.Console.WriteLine("接收消息{0}", msg);
 
             ctx.Channel.WriteAndFlushAsync(msg);
+        }
+
+        public override void ChannelRead(IChannelHandlerContext ctx, object msg)
+        {
+            System.Console.WriteLine(msg);
+            base.ChannelRead(ctx, msg);
+        }
+
+        public override void ExceptionCaught(IChannelHandlerContext context, Exception exception)
+        {
+            System.Console.WriteLine(exception.Message);
+            System.Console.WriteLine(exception.StackTrace);
+            base.ExceptionCaught(context, exception);
         }
     }
 }
