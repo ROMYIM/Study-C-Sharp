@@ -6,6 +6,7 @@ using DotNetty.Transport.Channels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NettyDemo.Infrastructure.Caches.Abbractions;
+using NettyDemo.Models.Dtos;
 
 namespace NettyDemo.Controllers
 {
@@ -43,9 +44,9 @@ namespace NettyDemo.Controllers
 
         [HttpGet]
         [Route("message")]
-        public async Task<Models.Options> PushMessage()
+        public async Task<Options> PushMessage()
         {
-            var options = new Models.Options
+            var options = new Options
             {
                 Id = Guid.NewGuid().ToString(),
                 Type = "PostType"

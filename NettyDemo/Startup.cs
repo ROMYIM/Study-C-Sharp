@@ -16,6 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using NettyDemo.ChannelHandlers;
+using NettyDemo.Models.Dtos;
 using NettyDemo.Infrastructure.Caches;
 using NettyDemo.Infrastructure.Caches.Abbractions;
 using NettyDemo.Infrastructure.Extensions;
@@ -35,10 +36,13 @@ namespace NettyDemo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IKeyValueCache<string, IChannel>, ChannelCache>();
-            services.AddTransient<LoginHandler>();
+            // services.AddTransient<LoginHandler>();
             services.AddTransient<PushMessageHandler>();
             services.AddNettyService((services, bootstrap) => 
             {
+                /// <summary>
+                /// 
+                /// </summary>
                 var dispatcher = new DispatcherEventLoopGroup();
                 var bossGroup = dispatcher;
                 var workGroup = new WorkerEventLoopGroup(dispatcher);
@@ -56,7 +60,7 @@ namespace NettyDemo
                 {
                     var pipeline = channel.Pipeline;
                     pipeline.AddLast("ACCEPT-LOG", new LoggingHandler());
-                    pipeline.AddLast("ACCEPT-CONN", services.GetRequiredService<LoginHandler>());
+                    // pipeline.AddLast("ACCEPT-CONN", services.GetRequiredService<LoginHandler>());
 
                 }));
 
@@ -64,7 +68,7 @@ namespace NettyDemo
                 {
                     var pipeline = channel.Pipeline;
                     pipeline.AddLast(new ProtobufVarint32FrameDecoder());
-                    pipeline.AddLast(new ProtobufDecoder(Models.Options.Parser));
+                    pipeline.AddLast(new ProtobufDecoder(Options.Parser));
                     pipeline.AddLast(new ProtobufVarint32LengthFieldPrepender());
                     pipeline.AddLast(new ProtobufEncoder());
 

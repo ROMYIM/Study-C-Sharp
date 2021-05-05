@@ -4,14 +4,17 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DynamicProxy.Attributes;
 
 namespace DynamicProxy
 {
-    public class AspectContext
+    public abstract class AspectContext
     {
-        public IReadOnlyCollection<AspectAttribute> Aspectes { get; set; }
-    
+        private List<Func<AspectDelegate, AspectDelegate>> _aspects;
+        public IReadOnlyCollection<Func<AspectDelegate, AspectDelegate>> Aspects => _aspects;
+        
+
         public IReadOnlyCollection<object> Parameters { get; private set; }
 
         public object ReturnValue { get; private set; }
@@ -25,11 +28,16 @@ namespace DynamicProxy
             Instance = instance;
             Parameters = new ReadOnlyCollection<object>(parameters);
             Method = method;
+            _aspects = new List<AspectAttribute>();
+            
         }
 
-        public void Invoke()
+        internal void AddAspect(AspectAttribute aspect)
         {
-            ReturnValue = Method.Invoke(Instance, Parameters.ToArray());
+            if (aspect == null) return;
+            _aspects.Add(aspect);
         }
+
+        public abstract Task InvokeAsync(AspectDelegate aspectDelegate);
     }
 }

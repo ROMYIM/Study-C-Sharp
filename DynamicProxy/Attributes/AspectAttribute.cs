@@ -1,16 +1,14 @@
+using System.Threading.Tasks;
+
 namespace DynamicProxy.Attributes
 {
     [System.AttributeUsage(System.AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-    sealed class AspectAttribute : System.Attribute
+    public abstract class AspectAttribute : System.Attribute
     {
         
         
-        public AspectAttribute()
-        {
-            
-        }
-
         
+        public abstract Task InvokeAsync(AspectContext context);
         
     }
 }
