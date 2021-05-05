@@ -46,7 +46,7 @@ namespace NettyDemo.ChannelHandlers
 
         public override void ChannelRead(IChannelHandlerContext context, object message)
         {
-            var clientHost = context.Channel.RemoteAddress.ToString();
+            var clientHost = context.GetRemoteHost();
             _logger.LogInformation("客户端{}发送消息{}", clientHost, message);
             _logger.LogInformation("消息类型{}", message.GetType().FullName);
             

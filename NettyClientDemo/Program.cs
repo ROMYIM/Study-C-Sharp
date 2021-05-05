@@ -17,7 +17,7 @@ namespace NettyClientDemo
                 bootstrap
                 .Group(group)
                 .Channel<TcpSocketChannel>()
-                // .Option(ChannelOption.TcpNodelay, true)
+                .Option(ChannelOption.TcpNodelay, true)
                 .Option(ChannelOption.AutoRead, true)
                 .Option(ChannelOption.ConnectTimeout, TimeSpan.FromMilliseconds(500))
                 .Handler(new ActionChannelInitializer<IChannel>(channel =>
