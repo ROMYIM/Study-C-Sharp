@@ -13,6 +13,12 @@ namespace NettyDemo.Infrastructure.Extensions
 {
     public static class DependencyInjectionExtension
     {
+        /// <summary>
+        /// 注册netty后台服务
+        /// </summary>
+        /// <param name="services">服务集合</param>
+        /// <param name="configureServerBootstrap"></param>
+        /// <returns>服务集合</returns>
         public static IServiceCollection AddNettyService(this IServiceCollection services, Action<IServiceProvider, ServerBootstrap> configureServerBootstrap)
         {
             if (configureServerBootstrap == null)
@@ -42,12 +48,20 @@ namespace NettyDemo.Infrastructure.Extensions
             return services;
         }
 
-        public static IServiceCollection AddMqConsumerService(this IServiceCollection services)
+        public static IServiceCollection AddMqConsumerService(this IServiceCollection services, Action<IZaabeeRabbitMqClient> subscribeConsumers)
         {
+            if (subscribeConsumers == null) 
+                throw new ArgumentNullException(nameof(subscribeConsumers));
+
+            services.AddSingleton<MessageQueueService>();
             services.AddHostedService<MessageQueueService>(serviceProvider => 
             {
-                
-            })
+                var service = serviceProvider.GetRequiredService<MessageQueueService>();
+                service.SubscribeConsumers = subscribeConsumers;
+                return service;
+            });
+
+            return services;
         }
     }
 }
