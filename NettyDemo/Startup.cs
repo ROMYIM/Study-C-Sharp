@@ -76,6 +76,7 @@ namespace NettyDemo
                 }));
             });
 
+            services.AddMqClient("RabbitMq", Configuration);
 
             services.AddMemoryCache();
             services.AddControllers();

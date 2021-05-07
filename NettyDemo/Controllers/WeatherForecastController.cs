@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NettyDemo.Infrastructure.Caches.Abbractions;
 using NettyDemo.Models.Dtos;
+using Zaabee.RabbitMQ.Abstractions;
 
 namespace NettyDemo.Controllers
 {
@@ -23,15 +24,22 @@ namespace NettyDemo.Controllers
 
         private readonly IKeyValueCache<string, IChannel> _channelCache;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IKeyValueCache<string, IChannel> channelCache)
+        private readonly IZaabeeRabbitMqClient _mqClient;
+
+        public WeatherForecastController(
+            ILogger<WeatherForecastController> logger, 
+            IKeyValueCache<string, IChannel> channelCache, 
+            IZaabeeRabbitMqClient mqClient)
         {
             _logger = logger;
             _channelCache = channelCache;
+            _mqClient = mqClient;
         }
 
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            var requstId = HttpContext.TraceIdentifier;
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
@@ -42,21 +50,16 @@ namespace NettyDemo.Controllers
             .ToArray();
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("message")]
-        public async Task<Options> PushMessage()
+        public async Task<Options> PushMessage([FromQuery] string code, [FromBody]Options options)
         {
-            var options = new Options
-            {
-                Id = Guid.NewGuid().ToString(),
-                Type = "PostType"
-            };
 
             var channels = _channelCache.Values;
-            foreach (var channel in channels)
-            {
-                await channel.WriteAndFlushAsync(options);
-            }
+            // foreach (var channel in channels)
+            // {
+            //     await channel.WriteAndFlushAsync(options);
+            // }
 
             return options;
         }

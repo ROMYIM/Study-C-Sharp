@@ -1,5 +1,6 @@
 using Xunit;
 using System.Text.RegularExpressions;
+using System;
 
 namespace SystemLibTest
 {
@@ -18,5 +19,17 @@ namespace SystemLibTest
         //Then
             Assert.Equal("你好", testString);
         }
+
+        [Fact]
+        public void UriTest()
+        {
+        //Given
+            var requestUri = "http://localhost:5000/WeatherForecast/message?code=1";
+        //When
+            var uri = new Uri(requestUri);
+        //Then
+            Assert.Equal(uri.Query, "?code=1");
+        }
     }
+    
 }
