@@ -20,6 +20,8 @@ using NettyDemo.Models.Dtos;
 using NettyDemo.Infrastructure.Caches;
 using NettyDemo.Infrastructure.Caches.Abbractions;
 using NettyDemo.Infrastructure.Extensions;
+using NettyDemo.Services.Consumers;
+using NettyDemo.Models.MessageCommads;
 
 namespace NettyDemo
 {
@@ -76,7 +78,13 @@ namespace NettyDemo
                 }));
             });
 
+            services.AddTransient<BaseDataUpdateService>();
+
             services.AddMqClient("RabbitMq", Configuration);
+            services.AddMqConsumerService((serviceProvider, mqClient) =>
+            {
+                mqClient.ReceiveCommand<BaseDataUpdateCommand>(queue: string.Empty, resolve: () => serviceProvider.GetRequiredService<BaseDataUpdateService>().Handle, prefetchCount: 10);
+            });
 
             services.AddMemoryCache();
             services.AddControllers();

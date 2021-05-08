@@ -2,6 +2,11 @@ syntax = "proto3";
 
 package nettyDemo.models.dtos;
 
+message BaseUpdateData {
+    
+    repeated Options data = 1;
+}
+
 message Options {
 
     string id = 1;

@@ -35,6 +35,7 @@ namespace NettyDemo.Infrastructure.BackgroundServices
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("服务停止");
+            _mqClient.Dispose();
             return Task.CompletedTask;
         }
     }
