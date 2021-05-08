@@ -4,17 +4,18 @@
     // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-    {
-        "name": ".NET Core NettyClientDemo (console)",
-        "type": "coreclr",
-        "request": "launch",
-        "preLaunchTask": "build",
-        "program": "${workspaceFolder}/NettyClientDemo/bin/Debug/net5.0/NettyClientDemo.dll",
-        "args": [],
-        "cwd": "${workspaceFolder}",
-        "stopAtEntry": false,
-        "console": "internalConsole"
-    },
+        
+        {
+            "name": ".NET Core NettyClientDemo (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/NettyClientDemo/bin/Debug/net5.0/NettyClientDemo.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/NettyClientDemo",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
         {
             "name": ".NET Core NettyDemo (web)",
             "type": "coreclr",
@@ -22,7 +23,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/NettyDemo/bin/Debug/net5.0/NettyDemo.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/NettyDemo",
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "openExternally",
@@ -32,7 +33,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
+                "/Views": "${workspaceFolder}/NettyDemo/Views"
             },
             "requireExactSource": false
         },
@@ -43,7 +44,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/EfCore/bin/Debug/net5.0/EfCore.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/EfCore",
             "stopAtEntry": false,
             "console": "internalConsole"
         },
@@ -54,7 +55,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/ConfigurationDemo/bin/Debug/net5.0/ConfigurationDemo.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/ConfigurationDemo",
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "openExternally",
@@ -64,7 +65,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
+                "/Views": "${workspaceFolder}/ConfigurationDemo/Views"
             }
         },
         {
@@ -74,7 +75,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/MiddleWareSample/bin/Debug/net5.0/MiddleWareSample.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/MiddleWareSample",
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "openExternally",
@@ -84,7 +85,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
+                "/Views": "${workspaceFolder}/MiddleWareSample/Views"
             }
         },
         {
@@ -94,7 +95,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/GrpcSample/bin/Debug/net5.0/GrpcSample.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/GrpcSample",
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "openExternally",
@@ -104,7 +105,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
+                "/Views": "${workspaceFolder}/GrpcSample/Views"
             }
         },
 

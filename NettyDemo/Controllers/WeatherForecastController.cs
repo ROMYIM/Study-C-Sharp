@@ -51,6 +51,7 @@ namespace NettyDemo.Controllers
         }
 
         [HttpPost]
+        [HttpGet]
         [Route("message")]
         public async Task<Options> PushMessage([FromQuery] string code, [FromBody]Options options)
         {

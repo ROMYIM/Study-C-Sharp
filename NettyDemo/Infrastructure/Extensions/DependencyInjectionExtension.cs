@@ -8,7 +8,6 @@ using Zaabee.RabbitMQ;
 using Zaabee.RabbitMQ.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using NettyDemo.Infrastructure.Options;
 
 namespace NettyDemo.Infrastructure.Extensions
 {
@@ -46,10 +45,12 @@ namespace NettyDemo.Infrastructure.Extensions
         public static IServiceCollection AddMqClient(this IServiceCollection services, string optionsName, IConfiguration configuration)
         {
             services.AddSingleton<ISerializer, Serializer>();
-            services.Configure<RabbitMqOptions>(configuration.GetSection(optionsName));
+            services.Configure<MqConfig>(configuration.GetSection(optionsName));
             services.AddSingleton<IZaabeeRabbitMqClient, ZaabeeRabbitMqClient>(serviceProvider => 
             {
                 var mqConfigOptions = serviceProvider.GetRequiredService<IOptions<MqConfig>>();
+                // var mapper = serviceProvider.GetRequiredService<IMapper>();
+                // var mqConfig = mapper.Map<MqConfig>(mqConfigOptions.Value);
                 var serializer = serviceProvider.GetRequiredService<ISerializer>();
                 return new ZaabeeRabbitMqClient(mqConfigOptions.Value, serializer);
             });
@@ -97,10 +98,5 @@ namespace NettyDemo.Infrastructure.Extensions
             return services;
         }
 
-        public static IServiceCollection AddMapperProfiles(this IServiceCollection services)
-        {
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            return services;
-        }
     }
 }

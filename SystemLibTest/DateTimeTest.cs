@@ -17,5 +17,21 @@ namespace SystemLibTest
         //Then
             Assert.Equal(time.DateTime, testTime);
         }
+
+        [Theory]
+        [InlineData("0:0:0:59")]
+        [InlineData("0:00:00:59,000")]
+        [InlineData("0:0:59")]
+        [InlineData("0:0:59.000")]
+        public void TimeSpanParse(string spanString)
+        {
+        //Given
+            var result = false;
+        //When
+            if (TimeSpan.TryParse(spanString, out var timeSpan))
+                result = timeSpan == TimeSpan.FromSeconds(59);
+        //Then
+            Assert.True(result);
+        }
     }
 }
