@@ -49,8 +49,6 @@ namespace NettyDemo.Infrastructure.Extensions
             services.AddSingleton<IZaabeeRabbitMqClient, ZaabeeRabbitMqClient>(serviceProvider => 
             {
                 var mqConfigOptions = serviceProvider.GetRequiredService<IOptions<MqConfig>>();
-                // var mapper = serviceProvider.GetRequiredService<IMapper>();
-                // var mqConfig = mapper.Map<MqConfig>(mqConfigOptions.Value);
                 var serializer = serviceProvider.GetRequiredService<ISerializer>();
                 return new ZaabeeRabbitMqClient(mqConfigOptions.Value, serializer);
             });
@@ -82,7 +80,14 @@ namespace NettyDemo.Infrastructure.Extensions
             return services;
         }
 
-        public static IServiceCollection AddMqConsumerService(this IServiceCollection services, Action<IZaabeeRabbitMqClient> subscribeConsumers)
+        /// <summary>
+        /// 添加消息队列消费者后台服务
+        /// </summary>
+        /// <param name="services">服务集合</param>
+        /// <param name="subscribeConsumers">订阅消费者的委托</param>
+        /// <returns>服务集合</returns>
+        public static IServiceCollection AddMqConsumerService(this IServiceCollection services, 
+            Action<IServiceProvider, IZaabeeRabbitMqClient> subscribeConsumers)
         {
             if (subscribeConsumers == null) 
                 throw new ArgumentNullException(nameof(subscribeConsumers));
