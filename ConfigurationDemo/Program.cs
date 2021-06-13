@@ -20,12 +20,14 @@ namespace ConfigurationDemo
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.ConfigureAppConfiguration((context, builder) =>
                     {
-                        var infrastructureConnectionString = context.Configuration.GetConnectionString("pgsql");
-                        builder.Add(new PgSqlConfigurationSource(optionsBuilder => optionsBuilder.UseNpgsql(infrastructureConnectionString)));
+                        
+                        var connectionString= builder.Build().GetConnectionString("pgsql");
+                        builder.Add(new PgSqlConfigurationSource(optionsBuilder => optionsBuilder.UseNpgsql(connectionString)));
                     });
                     webBuilder.UseStartup<Startup>();
                 });

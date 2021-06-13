@@ -19,4 +19,15 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="test.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

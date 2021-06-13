@@ -1,6 +1,11 @@
 using System;
-using System.Threading;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
 using Xunit;
+using Infrastructure.Extensions;
 
 namespace SystemLibTest
 {
@@ -28,10 +33,33 @@ namespace SystemLibTest
                 Timeout = TimeSpan.FromMinutes(3)
             };
         //When
-            var jsonString = System.Text.Json.JsonSerializer.Serialize(testModel);
-            var resultModel = System.Text.Json.JsonSerializer.Deserialize<Model>(jsonString);
+            var jsonString = JsonSerializer.Serialize(testModel);
+            var resultModel = JsonSerializer.Deserialize<Model>(jsonString);
         //Then
             Assert.Equal(testModel.Timeout, resultModel.Timeout);
+        }
+
+        [Fact]
+        public async ValueTask JsonToDictionary()
+        {
+        //Given
+            var stream = File.OpenRead("test.json");
+        //When
+            var data = await JsonSerializer.DeserializeAsync<Dictionary<string, object>>(stream);
+        //Then
+            Assert.True(data.Values.All(v => v is JsonElement));
+        }
+
+        [Fact]
+        public async ValueTask JsonElementToDictionary()
+        {
+        //Given
+            var stream = File.OpenRead("test.json");
+            var jsonDocument = await JsonDocument.ParseAsync(stream);
+        //When
+            var data = jsonDocument.RootElement.ToKeyValuePairs();
+        //Then
+            Assert.True(data is Dictionary<string, string>);
         }
     }
 

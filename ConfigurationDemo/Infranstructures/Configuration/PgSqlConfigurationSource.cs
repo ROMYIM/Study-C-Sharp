@@ -18,7 +18,7 @@ namespace ConfigurationDemo.Infranstructures.Configuration
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            throw new System.NotImplementedException();
+            return new PgSqlConfigurationProvider(this);
         }
     }
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ConfigurationDemo.Infranstructures.Db;
+using ConfigurationDemo.Infranstructures.Models;
+using ConfigurationDemo.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,9 +30,11 @@ namespace ConfigurationDemo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddOptions().Configure<EsbOptions>("esb", Configuration.GetSection("esb"));
+
             var connectionString = Configuration.GetConnectionString("pgsql");
-            services.AddDbContextPool<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
-            services.AddDbContextFactory<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+            services.AddDbContextPool<InfrastructureDbContext>(options => options.UseNpgsql(connectionString));
+            services.AddTransient<IChannelService<EsbOptions>, EsbChannelService>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

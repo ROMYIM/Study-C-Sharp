@@ -1,3 +1,4 @@
+using ConfigurationDemo.Infranstructures.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -11,6 +12,6 @@ namespace ConfigurationDemo.Infranstructures.Db
             
         }
 
-        
+        public DbSet<ChannelOptions> ChannelOptions { get; set; }
     }
 }
