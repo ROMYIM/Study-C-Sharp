@@ -1,4 +1,5 @@
 using ConfigurationDemo.Infranstructures.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ConfigurationDemo.Services
@@ -7,13 +8,16 @@ namespace ConfigurationDemo.Services
     {
         private readonly IOptionsMonitor<EsbOptions> _optionsMonitor;
 
+        private readonly IConfiguration _configuration;
+
         public string PostType => "esb";
 
-        public EsbOptions Options => _optionsMonitor.Get(PostType);
+        public EsbOptions Options => _configuration.GetSection(PostType).Get<EsbOptions>();
 
-        public EsbChannelService(IOptionsMonitor<EsbOptions> optionsMonitor)
+        public EsbChannelService(IOptionsMonitor<EsbOptions> optionsMonitor, IConfiguration configuration)
         {
             _optionsMonitor = optionsMonitor;
+            _configuration = configuration;
         }
     }
 }

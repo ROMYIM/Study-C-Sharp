@@ -30,7 +30,7 @@ namespace ConfigurationDemo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOptions().Configure<EsbOptions>("esb", Configuration.GetSection("esb"));
+            services.AddOptions<EsbOptions>();
 
             var connectionString = Configuration.GetConnectionString("pgsql");
             services.AddDbContextPool<InfrastructureDbContext>(options => options.UseNpgsql(connectionString));
