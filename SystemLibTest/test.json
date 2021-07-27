@@ -1,0 +1,33 @@
+{
+    "PostType": "ESB",
+    "Channel": "kjy",
+    "Options": {
+        "Channels": [
+            {
+                "Host": "www.baidu.com",
+                "ApiId": "12345",
+                "ServiceCodes": {
+                    "US": "aaa",
+                    "CN": "sss"
+                }
+            },
+            {
+                "Host": "www.baidu.com",
+                "ApiId": "12345",
+                "ServiceCodes": {
+                    "US": "bbb",
+                    "CN": "sss"
+                }
+            },
+            {
+                "Host": "www.baidu.com",
+                "ApiId": "12345",
+                "ServiceCodes": [
+                    "aaa",
+                    "bbbb",
+                    "cccc"
+                ]
+            }
+        ]
+    }
+}

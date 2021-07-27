@@ -4,6 +4,28 @@
     // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        // {
+        //     "name": ".NET Core AntBlazorWasm (blazorwasm)",
+        //     "type": "blazorwasm",
+        //     "request": "launch",
+        //     "program": "${workspaceFolder}/AntBlazorWasm/bin/Debug/net5/AntBlazorWasm.dll",
+        //     "cwd": "${workspaceFolder}/AntBlazorWasm",
+        //     "args": [],
+        //     "url": "http://localhost:4599",
+        //     "browser": "edge",
+        //     "hosted": true,
+        //     "env": {
+        //         "ASPNETCORE_ENVIRONMENT": "Development"
+        //     }
+        // },
+        {
+            "name": ".NET Core AntBlazorWasm (blazorwasm)",
+            "type": "blazorwasm",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/AntBlazorWasm",
+            "browser": "edge"
+        },
+
         
         {
             "name": ".NET Core NettyClientDemo (console)",

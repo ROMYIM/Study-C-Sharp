@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NettyClientDemo", "NettyCli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicProxy", "DynamicProxy\DynamicProxy.csproj", "{99022A2B-A43E-451B-8FC4-87B6546A8080}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntBlazorWasm", "AntBlazorWasm\AntBlazorWasm.csproj", "{BD1675E2-DC52-4933-910B-E1F949873EE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -226,5 +228,17 @@ Global
 		{99022A2B-A43E-451B-8FC4-87B6546A8080}.Release|x64.Build.0 = Release|Any CPU
 		{99022A2B-A43E-451B-8FC4-87B6546A8080}.Release|x86.ActiveCfg = Release|Any CPU
 		{99022A2B-A43E-451B-8FC4-87B6546A8080}.Release|x86.Build.0 = Release|Any CPU
+		{BD1675E2-DC52-4933-910B-E1F949873EE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD1675E2-DC52-4933-910B-E1F949873EE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD1675E2-DC52-4933-910B-E1F949873EE3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BD1675E2-DC52-4933-910B-E1F949873EE3}.Debug|x64.Build.0 = Debug|Any CPU
+		{BD1675E2-DC52-4933-910B-E1F949873EE3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BD1675E2-DC52-4933-910B-E1F949873EE3}.Debug|x86.Build.0 = Debug|Any CPU
+		{BD1675E2-DC52-4933-910B-E1F949873EE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD1675E2-DC52-4933-910B-E1F949873EE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD1675E2-DC52-4933-910B-E1F949873EE3}.Release|x64.ActiveCfg = Release|Any CPU
+		{BD1675E2-DC52-4933-910B-E1F949873EE3}.Release|x64.Build.0 = Release|Any CPU
+		{BD1675E2-DC52-4933-910B-E1F949873EE3}.Release|x86.ActiveCfg = Release|Any CPU
+		{BD1675E2-DC52-4933-910B-E1F949873EE3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

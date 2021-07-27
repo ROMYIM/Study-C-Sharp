@@ -50,7 +50,7 @@ namespace MiddleWareSample
 
             app.UseHttpsRedirection();
 
-            app.UseMiddleware<ClientIpMiddleWare>();
+            app.MapWhen(context => context.Request.Path == "/WeatherForecast", app => app.UseMiddleware<ClientIpMiddleWare>());
 
             app.UseRouting();
 
