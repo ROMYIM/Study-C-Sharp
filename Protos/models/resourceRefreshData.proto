@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package rpsResourceRefreshService.models.dtos;
+
+message RefreshData {
+    repeated RefreshContent Data = 1;
+}

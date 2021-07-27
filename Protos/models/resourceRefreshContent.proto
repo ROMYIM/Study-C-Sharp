@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package rpsResourceRefreshService.models.dtos;
+
+message RefreshContent {
+    string RefreshKey = 1;
+    string ContentType = 2;
+    bool Deleted = 3;
+}

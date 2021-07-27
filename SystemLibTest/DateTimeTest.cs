@@ -33,5 +33,16 @@ namespace SystemLibTest
         //Then
             Assert.True(result);
         }
+
+        [Fact]
+        public void DateTimeParseTest()
+        {
+        //Given
+            string parrten = "yyyy-MM-ddTHH:mm:sszzz";
+        //When
+            var dateTimeStr = DateTime.Now.ToString(parrten);
+        //Then
+            System.Console.WriteLine(dateTimeStr);
+        }
     }
 }
