@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +29,32 @@ namespace MiddleWareSample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddAuthentication(options => 
+            {
+                options.DefaultScheme = "Bearer";
+                // options.DefaultChallengeScheme = "oidc";
+
+            }).AddIdentityServerAuthentication("Bearer", options =>
+            {
+                options.SaveToken = true;
+                options.Authority = "http://localhost:5000";
+                options.ClaimsIssuer = "IdentityServer"; 
+                options.RequireHttpsMetadata = false;
+
+            });
+            
+            // .AddOpenIdConnect("oidc", options =>
+            // {
+            //     options.Authority = "http://localhost:5000";
+            //     options.ClientId = "middleware-sample";
+            //     options.ClientSecret = "middleware";
+            //     options.SaveTokens = true;
+            //     options.RequireHttpsMetadata = false;
+            // });
+
+            services.AddAuthorization();
+
             services.AddSingleton<ClientIpMiddleWare>();
             services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter()));
             services.AddSwaggerGen(c =>
@@ -50,7 +77,7 @@ namespace MiddleWareSample
 
             app.UseHttpsRedirection();
 
-            app.MapWhen(context => context.Request.Path == "/WeatherForecast", app => app.UseMiddleware<ClientIpMiddleWare>());
+            app.UseAuthentication();
 
             app.UseRouting();
 
@@ -61,6 +88,7 @@ namespace MiddleWareSample
                 return async context =>
                 {
                     logger.LogInformation("执行前");
+                    var isForm = context.Request.HasFormContentType;
 
                     await next(context);
 

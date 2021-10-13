@@ -1,4 +1,5 @@
 using Infrastructure.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace MiddleWareSample.Controllers
     public class MenuController : ControllerBase
     {
         [HttpGet]
+        [Authorize]
         public IEnumerable<Menu> Menus()
         {
             return new List<Menu>

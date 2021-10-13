@@ -14,8 +14,10 @@ namespace AsynchronousTest
             const int taskCount = 1000;
             var tasks = new Task[taskCount];
 
-            var httpHandler = new HttpClientHandler();
-            httpHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, error) => true;
+            var httpHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, error) => true
+            };
             using var client = new HttpClient(httpHandler)
             {
                 BaseAddress = new Uri("http://localhost:5000")

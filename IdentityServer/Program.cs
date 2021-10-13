@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace MiddleWareSample
+namespace IdentityServer
 {
     public class Program
     {
@@ -19,8 +19,7 @@ namespace MiddleWareSample
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
-                {        
-                    webBuilder.UseUrls("http://*:5027");         
+                {
                     webBuilder.UseStartup<Startup>();
                 });
     }

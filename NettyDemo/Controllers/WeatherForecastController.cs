@@ -57,10 +57,10 @@ namespace NettyDemo.Controllers
         {
 
             var channels = _channelCache.Values;
-            // foreach (var channel in channels)
-            // {
-            //     await channel.WriteAndFlushAsync(options);
-            // }
+            foreach (var channel in channels)
+            {
+                await channel.WriteAndFlushAsync(options);
+            }
 
             return options;
         }

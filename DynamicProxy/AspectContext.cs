@@ -28,14 +28,14 @@ namespace DynamicProxy
             Instance = instance;
             Parameters = new ReadOnlyCollection<object>(parameters);
             Method = method;
-            _aspects = new List<AspectAttribute>();
+            // _aspects = new List<AspectAttribute>();
             
         }
 
         internal void AddAspect(AspectAttribute aspect)
         {
             if (aspect == null) return;
-            _aspects.Add(aspect);
+            // _aspects.Add(aspect);
         }
 
         public abstract Task InvokeAsync(AspectDelegate aspectDelegate);

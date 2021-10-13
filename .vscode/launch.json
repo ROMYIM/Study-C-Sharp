@@ -4,6 +4,37 @@
     // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        {
+            "name": ".NET Core RedisSample (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/RedisSample/bin/Debug/net5.0/RedisSample.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/RedisSample",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
+        {
+            "name": ".NET Core IdentityServer (web)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/IdentityServer/bin/Debug/net5.0/IdentityServer.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/IdentityServer",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/IdentityServer/Views"
+            }
+        },
         // {
         //     "name": ".NET Core AntBlazorWasm (blazorwasm)",
         //     "type": "blazorwasm",

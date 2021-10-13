@@ -1,0 +1,16 @@
+{
+    "razor.disableBlazorDebugPrompt": true,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "yim",
+            "group": "Server",
+            "database": "configuration",
+            "username": "yim",
+            "password": "123456"
+        }
+    ]
+}

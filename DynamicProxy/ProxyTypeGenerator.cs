@@ -6,7 +6,7 @@ namespace DynamicProxy
     {
         public Type CreateProxyType(Type interfaceType,  Type implemetionType)
         {
-            
+            throw new NotSupportedException();
         }
     }
 }

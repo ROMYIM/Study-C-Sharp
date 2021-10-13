@@ -1,0 +1,38 @@
+@IdentityHost=https://localhost:5001
+
+POST {{IdentityHost}}/connect/token HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+client_id=netty-demo
+&grant_type=password
+&client_secret=eleven123456
+&scope=TestApi
+&username=yim
+&password=123456
+
+####
+
+POST {{IdentityHost}}/connect/token HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="client_id"
+middleware-sample
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="grant_type"
+client_credentials
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="client_secret"
+middleware
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+# Content-Type: application/json
+
+# {
+#     "client_id": "middleware-sample",
+#     "grant_type": "client_credentials",
+#     "client_secret": "middleware"
+# }
+
