@@ -18,20 +18,30 @@ namespace RedisSample
             int scriptResult;
             do
             {
-                var script = @"local currentTotalCount = 0
-                            local countArray = redis.call('hvals', @userCountKey)
-                            for index,value in ipairs(countArray) do
-                                currentTotalCount = currentTotalCount + tonumber(value)
+                var script = @"local currentTotalCount = redis.call('hget', @userCountKey, @totalKey)
+                            if (not(currentTotalCount)) then
+                                currentTotalCount = 0
+                            else
+                                currentTotalCount = tonumber(currentTotalCount)
                             end
-                            if (currentTotalCount >= tonumber(@totalCount)) then
+
+                            if (currentTotalCount + 1 >= tonumber(@totalCount)) then
                                 return 0
                             else
                                 local userCount = redis.call('hget', @userCountKey, @userKey)
-                                if (tonumber(userCount) >= tonumber(@userPerTotal)) then
+                                if (not(userCount)) then
+                                    userCount = 0
+                                else
+                                    userCount = tonumber(userCount)
+                                end
+
+                                if (userCount >= tonumber(@userPerTotal)) then
                                     return 0
                                 else
                                     userCount = userCount + 1
+                                    currentTotalCount = currentTotalCount + 1
                                     redis.call('hset', @userCountKey, @userKey, userCount)
+                                    redis.call('hset', @userCountKey, @totalKey, currentTotalCount)
                                     return 1
                                 end
                             end";
@@ -41,6 +51,7 @@ namespace RedisSample
                     userCountKey = "UsersCount",
                     totalCount = 10,
                     userKey = "Zikey",
+                    totalKey = "Total",
                     userPerTotal = 3
                 });
 
