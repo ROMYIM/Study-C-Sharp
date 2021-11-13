@@ -7,6 +7,7 @@ using Zaabee.RabbitMQ.SystemTextJson;
 using Zaabee.RabbitMQ;
 using Zaabee.RabbitMQ.Abstractions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace NettyDemo.Infrastructure.Extensions
@@ -17,16 +18,16 @@ namespace NettyDemo.Infrastructure.Extensions
         /// 注册netty后台服务
         /// </summary>
         /// <param name="services">服务集合</param>
-        /// <param name="configureServerBootstrap"></param>
+        /// <param name="configureServerBootstrap">配置<c>ServerBootstrap</c>的委托</param>
         /// <returns>服务集合</returns>
         public static IServiceCollection AddNettyService(this IServiceCollection services, Action<IServiceProvider, ServerBootstrap> configureServerBootstrap)
         {
             if (configureServerBootstrap == null)
                 throw new ArgumentNullException(nameof(configureServerBootstrap));
-            services.AddSingleton<NettyService>();
-            services.AddHostedService<NettyService>(services => 
+            services.TryAddSingleton<NettyService>();
+            services.AddHostedService<NettyService>(sp => 
             {
-                var service = services.GetRequiredService<NettyService>();
+                var service = sp.GetRequiredService<NettyService>();
                 service.ConfigureServerBootstrap = configureServerBootstrap;
                 return service;
             });
@@ -44,9 +45,9 @@ namespace NettyDemo.Infrastructure.Extensions
         /// <returns>服务集合</returns>
         public static IServiceCollection AddMqClient(this IServiceCollection services, string optionsName, IConfiguration configuration)
         {
-            services.AddSingleton<ISerializer, Serializer>();
+            services.TryAddSingleton<ISerializer, Serializer>();
             services.Configure<MqConfig>(configuration.GetSection(optionsName));
-            services.AddSingleton<IZaabeeRabbitMqClient, ZaabeeRabbitMqClient>(serviceProvider => 
+            services.TryAddSingleton<IZaabeeRabbitMqClient>(serviceProvider => 
             {
                 var mqConfigOptions = serviceProvider.GetRequiredService<IOptions<MqConfig>>();
                 var serializer = serviceProvider.GetRequiredService<ISerializer>();
@@ -68,8 +69,8 @@ namespace NettyDemo.Infrastructure.Extensions
             if (optionsBuilder == null)
                 throw new ArgumentNullException(nameof(optionsBuilder));
 
-            services.AddSingleton<ISerializer, Serializer>();
-            services.AddSingleton<IZaabeeRabbitMqClient, ZaabeeRabbitMqClient>(serviceProvider => 
+            services.TryAddSingleton<ISerializer, Serializer>();
+            services.TryAddSingleton<IZaabeeRabbitMqClient>(serviceProvider => 
             {
                 var serializer = serviceProvider.GetRequiredService<ISerializer>();
                 var options = new MqConfig();
@@ -92,7 +93,7 @@ namespace NettyDemo.Infrastructure.Extensions
             if (subscribeConsumers == null) 
                 throw new ArgumentNullException(nameof(subscribeConsumers));
 
-            services.AddSingleton<MessageQueueService>();
+            services.TryAddSingleton<MessageQueueService>();
             services.AddHostedService<MessageQueueService>(serviceProvider => 
             {
                 var service = serviceProvider.GetRequiredService<MessageQueueService>();
