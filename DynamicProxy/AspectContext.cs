@@ -15,26 +15,27 @@ namespace DynamicProxy
         public IReadOnlyCollection<Func<AspectDelegate, AspectDelegate>> Aspects => _aspects;
         
 
-        public IReadOnlyCollection<object> Parameters { get; private set; }
+        public IReadOnlyCollection<object> Parameters { get; internal set; }
 
         public object ReturnValue { get; private set; }
 
-        public MethodInfo Method { get; private set; }
+        public MethodInfo Method { get; internal set; }
 
-        public object Instance { get; private set; }
+        public object Instance { get; internal set; }
 
         public AspectContext(object instance, object[] parameters, MethodInfo method)
         {
             Instance = instance;
             Parameters = new ReadOnlyCollection<object>(parameters);
             Method = method;
-            // _aspects = new List<AspectAttribute>();
+            _aspects = new List<Func<AspectDelegate, AspectDelegate>>();
             
         }
 
         internal void AddAspect(AspectAttribute aspect)
         {
             if (aspect == null) return;
+            AspectDelegate next = aspect.InvokeAsync;
             // _aspects.Add(aspect);
         }
 

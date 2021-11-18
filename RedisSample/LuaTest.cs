@@ -13,12 +13,45 @@ namespace RedisSample
             _db = connection.GetDatabase(2);
         }
 
+        /// <summary>
+        /// <example>Lua脚本例子：
+        /// <code>
+        /// local currentTotalCount = redis.call('hget', @userCountKey, @totalKey)
+        /// if (not(currentTotalCount)) then
+        ///     currentTotalCount = 0
+        /// else
+        ///     currentTotalCount = tonumber(currentTotalCount)
+        /// end
+        /// if (currentTotalCount + 1 >= tonumber(@totalCount)) then
+        ///     return 0
+        /// else
+        ///     local userCount = redis.call('hget', @userCountKey, @userKey)
+        ///     if (not(userCount)) then
+        ///         userCount = 0
+        ///        else
+        ///            userCount = tonumber(userCount)
+        ///        end
+        ///
+        ///        if (userCount >= tonumber(@userPerTotal)) then
+        ///            return 0
+        ///        else
+        ///            userCount = userCount + 1
+        ///            currentTotalCount = currentTotalCount + 1
+        ///            redis.call('hset', @userCountKey, @userKey, userCount)
+        ///            redis.call('hset', @userCountKey, @totalKey, currentTotalCount)
+        ///            return 1
+        ///        end
+        ///    end
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
         public async Task TestAsync()
         {
             int scriptResult;
             do
             {
-                var script = @"local currentTotalCount = redis.call('hget', @userCountKey, @totalKey)
+                const string script = @"local currentTotalCount = redis.call('hget', @userCountKey, @totalKey)
                             if (not(currentTotalCount)) then
                                 currentTotalCount = 0
                             else

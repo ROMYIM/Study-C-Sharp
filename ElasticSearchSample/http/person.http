@@ -1,0 +1,21 @@
+@host=http://kubernetes.docker.internal:5000
+@baseUri={{host}}/person
+
+### create or update a person
+
+PUT {{baseUri}}?id=9j8dynwBJCj-J4bT6pFf HTTP/1.1
+Content-Type: application/json
+
+{
+    "Name": "凯乐",
+    "NickName": "万能乐",
+    "Age": 26,
+    "Job": {
+        "Department": "IT部",
+        "Name": "开发部主管"
+    }
+}
+
+### search person by keyword
+
+GET {{baseUri}}/search?keyword=开发部 HTTP/1.1

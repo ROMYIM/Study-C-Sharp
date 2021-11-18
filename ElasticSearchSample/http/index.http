@@ -1,0 +1,9 @@
+@host=http://localhost:5000
+@baseUri={{host}}/index
+
+
+### create a person index
+POST {{baseUri}}/person HTTP/1.1
+
+### get index mapping
+GET {{baseUri}}/mapping?indexName=employee HTTP/1.1

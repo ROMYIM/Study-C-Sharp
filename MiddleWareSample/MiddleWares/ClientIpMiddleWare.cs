@@ -9,9 +9,9 @@ namespace MiddleWareSample.MiddleWares
     {
         private readonly ILogger _logger;
 
-        private const int step = 5000;
+        private const int Step = 5000;
 
-        private static int index = 0;
+        private static int _index = 0;
 
         public ClientIpMiddleWare(ILoggerFactory loggerFactory)
         {
@@ -27,7 +27,7 @@ namespace MiddleWareSample.MiddleWares
 
             await next(context);
 
-            var currentIndex = Interlocked.Add(ref index, step);
+            var currentIndex = Interlocked.Add(ref _index, Step);
             _logger.LogInformation("计数：{}", currentIndex);
 
             await context.Response.WriteAsync(currentIndex.ToString());

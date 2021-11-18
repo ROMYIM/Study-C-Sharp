@@ -5,6 +5,26 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": ".NET Core ElasticSearchSample (web)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/ElasticSearchSample/bin/Debug/net5.0/ElasticSearchSample.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/ElasticSearchSample",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/ElasticSearchSample/Views"
+            }
+        },
+        {
             "name": ".NET Core RedisSample (console)",
             "type": "coreclr",
             "request": "launch",

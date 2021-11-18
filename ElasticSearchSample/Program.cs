@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace MiddleWareSample
+namespace ElasticSearchSample
 {
     public class Program
     {
@@ -18,14 +18,9 @@ namespace MiddleWareSample
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .UseDefaultServiceProvider(options =>
-                {
-                    options.ValidateScopes = true;
-                    options.ValidateOnBuild = true;
-                })
                 .ConfigureWebHostDefaults(webBuilder =>
-                {        
-                    webBuilder.UseUrls("http://*:5027");         
+                {
+                    webBuilder.UseUrls("http://*:5000");
                     webBuilder.UseStartup<Startup>();
                 });
     }

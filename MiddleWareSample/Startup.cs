@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Infrastructure.Converters;
 using MiddleWareSample.MiddleWares;
+using MiddleWareSample.Extensions;
 
 namespace MiddleWareSample
 {
@@ -74,6 +75,8 @@ namespace MiddleWareSample
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MiddleWareSample v1"));
             }
+
+            app.UseTest();
 
             app.UseHttpsRedirection();
 
