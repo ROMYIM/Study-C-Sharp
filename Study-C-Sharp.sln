@@ -1,47 +1,49 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpcTest", "RpcTest\RpcTest.csproj", "{95C8A9CE-018C-4076-B864-989B15DFB190}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpcTest", "RpcTest\RpcTest.csproj", "{95C8A9CE-018C-4076-B864-989B15DFB190}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcSample", "GrpcSample\GrpcSample.csproj", "{EC189869-D05B-44B0-AC8C-3F6F5EA966F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcSample", "GrpcSample\GrpcSample.csproj", "{EC189869-D05B-44B0-AC8C-3F6F5EA966F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsynchronousTest", "AsynchronousTest\AsynchronousTest.csproj", "{88EEADD0-810E-4F76-89FF-43422F06D589}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsynchronousTest", "AsynchronousTest\AsynchronousTest.csproj", "{88EEADD0-810E-4F76-89FF-43422F06D589}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemLibTest", "SystemLibTest\SystemLibTest.csproj", "{B99C3E80-B3B3-4153-91AB-41AB8F48CE2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SystemLibTest", "SystemLibTest\SystemLibTest.csproj", "{B99C3E80-B3B3-4153-91AB-41AB8F48CE2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{53CE9498-FC5C-4C57-BC3B-870747B58015}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{53CE9498-FC5C-4C57-BC3B-870747B58015}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiddleWareSample", "MiddleWareSample\MiddleWareSample.csproj", "{6D21C5FA-3B7D-4822-8F0A-7CDBB1F2D60B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiddleWareSample", "MiddleWareSample\MiddleWareSample.csproj", "{6D21C5FA-3B7D-4822-8F0A-7CDBB1F2D60B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{8542DAE9-C536-4D39-847D-8787A3A406C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{8542DAE9-C536-4D39-847D-8787A3A406C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHostSample", "WebHostSample\WebHostSample.csproj", "{16D00C98-6246-4549-8081-422DF597D0B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebHostSample", "WebHostSample\WebHostSample.csproj", "{16D00C98-6246-4549-8081-422DF597D0B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityTest", "SecurityTest\SecurityTest.csproj", "{CD313F0A-28E6-4018-9890-B42B2A19E39C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SecurityTest", "SecurityTest\SecurityTest.csproj", "{CD313F0A-28E6-4018-9890-B42B2A19E39C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationDemo", "ConfigurationDemo\ConfigurationDemo.csproj", "{017EFEB0-4D28-4A65-ACA3-FCE58D39166C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigurationDemo", "ConfigurationDemo\ConfigurationDemo.csproj", "{017EFEB0-4D28-4A65-ACA3-FCE58D39166C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfCore", "EfCore\EfCore.csproj", "{1793B371-7246-4EE8-8CFC-B31FDAD38BC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfCore", "EfCore\EfCore.csproj", "{1793B371-7246-4EE8-8CFC-B31FDAD38BC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NettyDemo", "NettyDemo\NettyDemo.csproj", "{C5E556D3-D9DB-4937-A664-F398C2FAF139}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NettyDemo", "NettyDemo\NettyDemo.csproj", "{C5E556D3-D9DB-4937-A664-F398C2FAF139}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NettyClientSample", "NettyClientSample\NettyClientSample.csproj", "{2087D004-5695-4684-B7A5-608946FD3765}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NettyClientSample", "NettyClientSample\NettyClientSample.csproj", "{2087D004-5695-4684-B7A5-608946FD3765}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NettyClientDemo", "NettyClientDemo\NettyClientDemo.csproj", "{3A13585C-EBA4-4C88-BAF0-A81FEFA841A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NettyClientDemo", "NettyClientDemo\NettyClientDemo.csproj", "{3A13585C-EBA4-4C88-BAF0-A81FEFA841A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicProxy", "DynamicProxy\DynamicProxy.csproj", "{99022A2B-A43E-451B-8FC4-87B6546A8080}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicProxy", "DynamicProxy\DynamicProxy.csproj", "{99022A2B-A43E-451B-8FC4-87B6546A8080}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntBlazorWasm", "AntBlazorWasm\AntBlazorWasm.csproj", "{BD1675E2-DC52-4933-910B-E1F949873EE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntBlazorWasm", "AntBlazorWasm\AntBlazorWasm.csproj", "{BD1675E2-DC52-4933-910B-E1F949873EE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer", "IdentityServer\IdentityServer.csproj", "{91CAE703-3A79-4B38-BBA2-3024477A31E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "IdentityServer\IdentityServer.csproj", "{91CAE703-3A79-4B38-BBA2-3024477A31E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryService", "QueryService\QueryService.csproj", "{EFE7ED16-F752-45E2-9400-9367E034C8B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueryService", "QueryService\QueryService.csproj", "{EFE7ED16-F752-45E2-9400-9367E034C8B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisSample", "RedisSample\RedisSample.csproj", "{BFBE00DB-9C3D-4B8A-8382-4E2D43342A38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedisSample", "RedisSample\RedisSample.csproj", "{BFBE00DB-9C3D-4B8A-8382-4E2D43342A38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElasticSearchSample", "ElasticSearchSample\ElasticSearchSample.csproj", "{A7893603-AE44-4C98-BEA3-6060369B759F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElasticSearchSample", "ElasticSearchSample\ElasticSearchSample.csproj", "{A7893603-AE44-4C98-BEA3-6060369B759F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WcfSample", "WcfSample\WcfSample.csproj", "{C4AABEA8-0001-45D9-A3C2-1CCC8995AEC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,9 +53,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{95C8A9CE-018C-4076-B864-989B15DFB190}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -296,5 +295,23 @@ Global
 		{A7893603-AE44-4C98-BEA3-6060369B759F}.Release|x64.Build.0 = Release|Any CPU
 		{A7893603-AE44-4C98-BEA3-6060369B759F}.Release|x86.ActiveCfg = Release|Any CPU
 		{A7893603-AE44-4C98-BEA3-6060369B759F}.Release|x86.Build.0 = Release|Any CPU
+		{C4AABEA8-0001-45D9-A3C2-1CCC8995AEC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4AABEA8-0001-45D9-A3C2-1CCC8995AEC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4AABEA8-0001-45D9-A3C2-1CCC8995AEC3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C4AABEA8-0001-45D9-A3C2-1CCC8995AEC3}.Debug|x64.Build.0 = Debug|Any CPU
+		{C4AABEA8-0001-45D9-A3C2-1CCC8995AEC3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C4AABEA8-0001-45D9-A3C2-1CCC8995AEC3}.Debug|x86.Build.0 = Debug|Any CPU
+		{C4AABEA8-0001-45D9-A3C2-1CCC8995AEC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4AABEA8-0001-45D9-A3C2-1CCC8995AEC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4AABEA8-0001-45D9-A3C2-1CCC8995AEC3}.Release|x64.ActiveCfg = Release|Any CPU
+		{C4AABEA8-0001-45D9-A3C2-1CCC8995AEC3}.Release|x64.Build.0 = Release|Any CPU
+		{C4AABEA8-0001-45D9-A3C2-1CCC8995AEC3}.Release|x86.ActiveCfg = Release|Any CPU
+		{C4AABEA8-0001-45D9-A3C2-1CCC8995AEC3}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {72686F55-260D-4586-8E4F-2BC77D41E567}
 	EndGlobalSection
 EndGlobal
