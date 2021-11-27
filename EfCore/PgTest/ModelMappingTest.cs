@@ -4,12 +4,19 @@ using Xunit;
 using System;
 using System.Threading.Tasks;
 using System.Text.Json;
+using Xunit.Abstractions;
 
 namespace EfCore.PgTest
 {
     public class ModelMappingTest
     {
+        private readonly ITestOutputHelper _testOutputHelper;
         private readonly PgDbContext _dbContext = new PgDbContext();
+
+        public ModelMappingTest(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
 
         [Fact]
         public async ValueTask JsonDocumentTest()
@@ -36,9 +43,8 @@ namespace EfCore.PgTest
             }
             catch (System.Exception ex)
             {
-                
-                System.Console.WriteLine(ex.Message);
-                System.Console.WriteLine(ex.InnerException.Message);
+                _testOutputHelper.WriteLine(ex.Message);
+                if (ex.InnerException != null) _testOutputHelper.WriteLine(ex.InnerException.Message);
             }
             
 

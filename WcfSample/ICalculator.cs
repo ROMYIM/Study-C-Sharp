@@ -8,16 +8,20 @@ using System.Text;
 namespace WcfSample
 {
     // 注意: 使用“重构”菜单上的“重命名”命令，可以同时更改代码和配置文件中的接口名“IService1”。
-    [ServiceContract]
-    public interface IService1
+    [ServiceContract(Namespace = "http://Microsoft.ServiceModel.Samples")]
+    public interface ICalculator
     {
         [OperationContract]
-        string GetData(int value);
-
+        double Add(double n1, double n2);
+        
         [OperationContract]
-        CompositeType GetDataUsingDataContract(CompositeType composite);
-
-        // TODO: 在此添加您的服务操作
+        double Subtract(double n1, double n2);
+        
+        [OperationContract]
+        double Multiply(double n1, double n2);
+        
+        [OperationContract]
+        double Divide(double n1, double n2);
     }
 
     // 使用下面示例中说明的数据约定将复合类型添加到服务操作。
