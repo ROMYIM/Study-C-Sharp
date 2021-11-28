@@ -5,14 +5,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using DynamicProxy.Attributes;
 
-namespace DynamicProxy
+
+namespace ILSample
 {
+    public delegate Task AspectDelegate(AspectContext context);
+    
     public class AspectContext
     {
-
-        public IServiceProvider ApplicationServices { get; }
 
         public object?[]? Parameters { get; internal set; }
 
@@ -22,9 +22,9 @@ namespace DynamicProxy
 
         public object Instance { get; internal set; }
 
-        internal AspectContext(IServiceProvider serviceProvider)
+        internal AspectContext()
         {
-            ApplicationServices = serviceProvider;
+            Method = typeof(Person).GetMethod("Show", BindingFlags.Public);
         }
 
 
