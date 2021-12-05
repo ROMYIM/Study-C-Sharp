@@ -1,32 +1,43 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ILSample
 {
     public class PersonProxy
     {
+        private static readonly Func<IServiceProvider, AspectDelegate> AspectFactory = services =>
+        {
+            var aspectBuilder = new AspectBuilder(services);
+            var aspect = aspectBuilder.Build();
+            return aspect;
+        };
+
+        private static readonly MethodInfo ShowMethod =
+            typeof(Person).GetTypeInfo().DeclaredMethods.First(m => m.Name == "Show");
+
         private Person _person;
 
-        private Guid _guid;
+        private IServiceProvider _services;
 
-        public PersonProxy(int age, string name, Guid guid)
+        public PersonProxy(int age, string name, IServiceProvider services)
         {
             _person = new Person(age, name);
-            _guid = guid;
+            _services = services;
         }
 
         public void Show(string name, int age)
         {
-            var context = new AspectContext();
+            var aspectDelegate = AspectFactory(_services);
+            var contextFactory = new AspectContextFactory(_services);
+            var context = contextFactory.Create();
+
+            context.Method = ShowMethod;
             context.Instance = _person;
             context.Parameters = new object?[] {name, age};
-            AspectDelegate @delegate = aspectContext =>
-            {
-                aspectContext.ReturnValue =
-                    aspectContext.Method.Invoke(aspectContext.Instance, aspectContext.Parameters);
-                return Task.CompletedTask;
-            };
-            @delegate.Invoke(context);
+
+            aspectDelegate(context);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Nest;
 
 namespace Infrastructure.Models
@@ -6,6 +7,7 @@ namespace Infrastructure.Models
     public class Person
     {
         [Keyword(Name = "name")]
+        [Column("name")]
         public string Name { get; set; }
 
         [Text(Name = "nick_name", Analyzer = "ik_max_word")]

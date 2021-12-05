@@ -1,18 +1,12 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-
 
 namespace ILSample
 {
-    public delegate Task AspectDelegate(AspectContext context);
-    
     public class AspectContext
     {
+
+        public IServiceProvider ApplicationServices { get; }
 
         public object?[]? Parameters { get; internal set; }
 
@@ -22,9 +16,9 @@ namespace ILSample
 
         public object Instance { get; internal set; }
 
-        internal AspectContext()
+        internal AspectContext(IServiceProvider serviceProvider)
         {
-            Method = typeof(Person).GetMethod("Show", BindingFlags.Public);
+            ApplicationServices = serviceProvider;
         }
 
 

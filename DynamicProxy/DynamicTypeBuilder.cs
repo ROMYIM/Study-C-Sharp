@@ -12,7 +12,6 @@ namespace DynamicProxy
 {
     public class DynamicTypeBuilder
     {
-
         private readonly ProxyTypeModule _module;
 
         private readonly IServiceProvider _services;
@@ -106,17 +105,24 @@ namespace DynamicProxy
         public DynamicTypeBuilder ConfigureMethod(MethodInfo methodInfo)
         {
             var aspect = methodInfo.GetCustomAttribute<AspectAttribute>();
-            var aspectBuilder = new AspectBuilder(_services);
-            if (aspect?.InterceptorTypes.Any() ?? false)
+            Func<IServiceProvider, AspectDelegate> aspectFactory = services =>
             {
-                foreach (var interceptorType in aspect.InterceptorTypes)
+                var aspectBuilder = new AspectBuilder(services);
+                if (aspect?.InterceptorTypes.Any() ?? false)
                 {
-                    var interceptor = (IInterceptor)_services.GetService(interceptorType);
-                    aspectBuilder.AddInterceptor(interceptor);
+                    foreach (var interceptorType in aspect.InterceptorTypes)
+                    {
+                        var interceptor = (IInterceptor) services.GetService(interceptorType);
+                        aspectBuilder.AddInterceptor(interceptor);
+                    }
                 }
-            }
-            AspectDelegate next = aspectBuilder.Build();
+
+                AspectDelegate next = aspectBuilder.Build();
+                return next;
+            };
             
+            
+
             var parameterInfos = methodInfo.GetParameters();
             var parameterTypes = parameterInfos.Select(p => p.ParameterType).ToArray();
             var methodBuilder = _typeBuilder.DefineMethod(methodInfo.Name, MethodAttributes.Public,
@@ -125,6 +131,9 @@ namespace DynamicProxy
             var il = methodBuilder.GetILGenerator();
             il.Emit(OpCodes.Nop);
             il.Emit(OpCodes.Ldarg_0);
+            
+            il.Emit(OpCodes.Ldfld, ServicesFeature.FieldBuilder);
+            
             
             return this;
         }
