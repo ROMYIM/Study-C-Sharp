@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
+using DynamicProxy.Extensions;
 
 namespace ILSample
 {
@@ -28,10 +30,19 @@ namespace ILSample
 
         public AspectDelegate Build()
         {
-            AspectDelegate next = context =>
+            AspectDelegate next = async context =>
             {
-                context.ReturnValue = context.Method.Invoke(context.Instance, context.Parameters);
-                return Task.CompletedTask;
+                var returnValue = context.Method.Invoke(context.Instance, context.Parameters);
+
+                var returnType = context.Method.ReturnType;
+                if (returnType == typeof(void))
+                {
+                    context.ReturnValue = null;
+                    return;
+                }
+
+                await AwaitReturnAsync(returnValue);
+                context.ReturnValue = returnValue;
             };
             
             for (int i = Aspects.Count - 1; i >= 0; i--)
@@ -40,6 +51,28 @@ namespace ILSample
             }
 
             return next;
+        }
+        
+        private static async ValueTask AwaitReturnAsync(object? returnValue)
+        {
+            switch (returnValue)
+            {
+                case null:
+                    break;
+                case Task task:
+                    await task;
+                    break;
+                case ValueTask valueTask:
+                    await valueTask;
+                    break;
+                default:
+                    var returnValueTypeInfo = returnValue.GetType().GetTypeInfo();
+                    if (returnValueTypeInfo.IsGenericType && returnValueTypeInfo.GetGenericTypeDefinition() == typeof(ValueTask<>))
+                    {
+                        await (dynamic)returnValue;
+                    }
+                    break;
+            }
         }
     }
 }

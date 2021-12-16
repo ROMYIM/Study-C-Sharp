@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ILSample
 {
@@ -11,6 +12,16 @@ namespace ILSample
             Services = serviceProvider;
         }
 
-        internal AspectContext Create() => new AspectContext(Services);
+        [return: NotNull]
+        internal AspectContext Create(MethodFeature methodFeature)
+        {
+            var context = new AspectContext(Services)
+            {
+                Instance = methodFeature.OriginalInstance,
+                Method = methodFeature.MethodInfo,
+                Parameters = methodFeature.Parameters
+            };
+            return context;
+        }
     }
 }

@@ -18,5 +18,11 @@ namespace ILSample
             Console.WriteLine(_age == age);
             Console.WriteLine(_name == name);
         }
+
+        public virtual async Task<string> BaiduAsync()
+        {
+            using var httpClient = new HttpClient();
+            return await httpClient.GetStringAsync("https://baidu.com");
+        }
     }
 }

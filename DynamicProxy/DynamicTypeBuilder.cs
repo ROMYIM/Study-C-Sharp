@@ -12,6 +12,12 @@ namespace DynamicProxy
 {
     public class DynamicTypeBuilder
     {
+        private static readonly ConstructorInfo AspectContextFactoryConstructor =
+            typeof(AspectContextFactory).GetTypeInfo().GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new []{typeof(IServiceProvider)},null);
+
+        private static readonly MethodInfo CreateAspectContext =
+            GetMethod<AspectContextFactory>(nameof(AspectContextFactory.Create));
+        
         private readonly ProxyTypeModule _module;
 
         private readonly IServiceProvider _services;
@@ -26,13 +32,20 @@ namespace DynamicProxy
         
         internal ConstructorFeature InstanceConstructorFeatures { get; private set; }
         
+        /// <summary>
+        /// 动态类型中用来描述原本实例
+        /// </summary>
         internal FieldFeature InstanceFieldFeature { get; private set; }
         
+        /// <summary>
+        /// 动态类型中用来描述<see cref="IServiceProvider"/>字段的描述集合
+        /// </summary>
         internal FieldFeature ServicesFeature { get; private set; }
 
         public DynamicTypeBuilder(ProxyTypeModule module, Type instanceType, IServiceProvider services)
         {
             InstanceType = instanceType ?? throw new ArgumentNullException(nameof(instanceType));
+            _module = module;
             _typeBuilder = _module.ModuleBuilder.DefineType(InstanceType.Name, TypeAttributes.Public);
             _services = services;
         }
@@ -133,9 +146,24 @@ namespace DynamicProxy
             il.Emit(OpCodes.Ldarg_0);
             
             il.Emit(OpCodes.Ldfld, ServicesFeature.FieldBuilder);
+            il.Emit(OpCodes.Callvirt, aspectFactory.Method);
+            il.Emit(OpCodes.Stloc_0);
             
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldfld, ServicesFeature.FieldBuilder);
+            il.Emit(OpCodes.Newobj, AspectContextFactoryConstructor);
+            il.Emit(OpCodes.Stloc_1);
+            
+            il.Emit(OpCodes.Ldloc_1);
+            il.Emit(OpCodes.Callvirt, CreateAspectContext);
+            il.Emit(OpCodes.Stloc_2);
             
             return this;
+        }
+
+        private static MethodInfo GetMethod<T>(string methodName)
+        {
+            return typeof(T).GetTypeInfo().GetMethod(methodName);
         }
     }
 }

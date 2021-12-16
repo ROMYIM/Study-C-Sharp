@@ -40,6 +40,9 @@ namespace Infrastructure.Cache
                 Setters = new Dictionary<string, Action<T, object>>(properties.Length);
                 foreach (var propertyInfo in properties)
                 {
+                    if (propertyInfo.GetCustomAttribute<NotMappedAttribute>() != null)
+                        continue;
+                    
                     var setterMethod = propertyInfo.GetSetMethod(true);
                     if (setterMethod != null)
                     {

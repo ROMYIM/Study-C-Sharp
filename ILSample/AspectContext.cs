@@ -10,7 +10,7 @@ namespace ILSample
 
         public object?[]? Parameters { get; internal set; }
 
-        public object ReturnValue { get; set; }
+        public object? ReturnValue { get; set; }
 
         public MethodInfo Method { get; internal set; }
 
