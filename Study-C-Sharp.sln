@@ -58,6 +58,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRSample", "SignalRSam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailKitTest", "MailKitTest\MailKitTest.csproj", "{FE943B6E-BBE6-482E-BE26-286A8BA20F95}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchedulerService", "SchedulerService\SchedulerService.csproj", "{1FF616E1-B4F4-4B5E-9118-67356BC6CFE4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -380,6 +382,18 @@ Global
 		{FE943B6E-BBE6-482E-BE26-286A8BA20F95}.Release|x64.Build.0 = Release|Any CPU
 		{FE943B6E-BBE6-482E-BE26-286A8BA20F95}.Release|x86.ActiveCfg = Release|Any CPU
 		{FE943B6E-BBE6-482E-BE26-286A8BA20F95}.Release|x86.Build.0 = Release|Any CPU
+		{1FF616E1-B4F4-4B5E-9118-67356BC6CFE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FF616E1-B4F4-4B5E-9118-67356BC6CFE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FF616E1-B4F4-4B5E-9118-67356BC6CFE4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1FF616E1-B4F4-4B5E-9118-67356BC6CFE4}.Debug|x64.Build.0 = Debug|Any CPU
+		{1FF616E1-B4F4-4B5E-9118-67356BC6CFE4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1FF616E1-B4F4-4B5E-9118-67356BC6CFE4}.Debug|x86.Build.0 = Debug|Any CPU
+		{1FF616E1-B4F4-4B5E-9118-67356BC6CFE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FF616E1-B4F4-4B5E-9118-67356BC6CFE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FF616E1-B4F4-4B5E-9118-67356BC6CFE4}.Release|x64.ActiveCfg = Release|Any CPU
+		{1FF616E1-B4F4-4B5E-9118-67356BC6CFE4}.Release|x64.Build.0 = Release|Any CPU
+		{1FF616E1-B4F4-4B5E-9118-67356BC6CFE4}.Release|x86.ActiveCfg = Release|Any CPU
+		{1FF616E1-B4F4-4B5E-9118-67356BC6CFE4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

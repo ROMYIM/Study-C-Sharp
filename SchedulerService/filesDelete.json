@@ -1,0 +1,8 @@
+﻿{
+  "FilesDelete": {
+    "JobKey": "FilesDeleteJob",
+    "Description": "文件删除任务",
+    "DirectoryPath": "I:\\yim\\Documents",
+    "CronExpression": "0/3 * * * * ? "
+  }
+}
