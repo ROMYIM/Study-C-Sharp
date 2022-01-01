@@ -37,7 +37,7 @@ public class Worker : BackgroundService
             if (refreshResult)
                 _logger.LogInformation("触发器刷新成功");
             else
-                _logger.LogError("触发器刷新失败");
+                _logger.LogInformation("触发器刷新失败");
         });
         return base.StartAsync(cancellationToken);
     }
