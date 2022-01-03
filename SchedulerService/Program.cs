@@ -2,6 +2,7 @@ using System.Collections.Specialized;
 using Infrastructure.Models;
 using Quartz;
 using SchedulerService;
+using SchedulerService.Hubs;
 using SchedulerService.Jobs;
 
 IHost host = Host.CreateDefaultBuilder(args)
@@ -20,6 +21,7 @@ IHost host = Host.CreateDefaultBuilder(args)
             { Worker.CronExpressionKey(jobOptions.JobKey), jobOptions.CronExpression }
         },configurator =>
         {
+
             configurator.UseMicrosoftDependencyInjectionJobFactory();
 
             configurator.AddJob<FilesDeleteJob>(jobConfigurator =>
@@ -33,6 +35,24 @@ IHost host = Host.CreateDefaultBuilder(args)
                 triggerConfigurator.WithCronSchedule(jobOptions.CronExpression);
             });
         });
+
+        services.AddSignalR(options =>
+        {
+            options.KeepAliveInterval = TimeSpan.FromSeconds(10);
+            options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+            options.HandshakeTimeout = TimeSpan.FromSeconds(10);
+            options.EnableDetailedErrors = true;
+        });
+    })
+    .ConfigureWebHostDefaults(builder =>
+    {
+        builder.Configure(app =>
+        {
+            app.UseRouting();
+            app.UseEndpoints(endpoints => endpoints.MapHub<ServiceHub>("services"));
+        });
+
+        builder.UseUrls("http://*:5020");
     })
     .Build();
 
