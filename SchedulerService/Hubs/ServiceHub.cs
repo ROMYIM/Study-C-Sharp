@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Infrastructure.Models;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Options;
 using Quartz;
 using SchedulerService.Jobs;
 
@@ -14,11 +15,16 @@ public class ServiceHub : Hub
 
     private readonly ISchedulerFactory _schedulerFactory;
 
+    private readonly IOptions<IEnumerable<SchedulerInfo>> _schedulerInfoOptions;
+
     public const string ScheduleName = "SignalRScheduler";
 
-    public ServiceHub(ILoggerFactory loggerFactory, ISchedulerFactory schedulerFactory)
+    public ServiceHub(ILoggerFactory loggerFactory, 
+        ISchedulerFactory schedulerFactory, 
+        IOptions<IEnumerable<SchedulerInfo>> schedulerInfoOptions)
     {
         _schedulerFactory = schedulerFactory;
+        _schedulerInfoOptions = schedulerInfoOptions;
         _logger = loggerFactory.CreateLogger(GetType());
         _instanceId = Guid.NewGuid();
         _logger.LogInformation("{}", _instanceId);
@@ -33,7 +39,7 @@ public class ServiceHub : Hub
             var jobDetail = await scheduler.GetJobDetail(jobKey);
             if (jobDetail == null)
             {
-                var newJob = JobBuilder.Create<ServiceScheduleJob>()
+                var newJob = JobBuilder.Create<SignalRScheduleJob>()
                     .WithIdentity(jobKey)
                     .WithDescription(jobInfo.Description)
                     .UsingJobData(nameof(Context.ConnectionId), Context.ConnectionId)

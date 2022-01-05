@@ -1,0 +1,7 @@
+﻿{
+  "Schedulers": [
+    {
+      "Name": "SignalRScheduler"
+    }
+  ]
+}

@@ -7,34 +7,29 @@ using SchedulerService.Jobs;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration(builder =>
-        builder.AddJsonFile("filesDelete.json", true, true))
+        builder.AddJsonFile("filesDelete.json", true, true)
+            .AddJsonFile("schedule.json", true, true))
     .ConfigureServices((context, services) =>
     {
         var configuration = context.Configuration;
         var filesDeleteConfiguration = configuration.GetRequiredSection("FilesDelete");
+        var schedulerConfiguration = configuration.GetRequiredSection("SignalRScheduler");
         
         services.AddHostedService<Worker>();
-        services.AddOptions().Configure<FilesDeleteJobOptions>(filesDeleteConfiguration);
+        services.AddOptions()
+            .Configure<FilesDeleteJobOptions>(filesDeleteConfiguration)
+            .Configure<IEnumerable<SchedulerInfo>>(schedulerConfiguration);
         var jobOptions = filesDeleteConfiguration.Get<FilesDeleteJobOptions>();
-        services.AddQuartz(new NameValueCollection()
+        var schedulerOptions = schedulerConfiguration.Get<IEnumerable<SchedulerInfo>>();
+        foreach (var schedulerOption in schedulerOptions)
         {
-            { Worker.CronExpressionKey(jobOptions.JobKey), jobOptions.CronExpression }
-        },configurator =>
-        {
-
-            configurator.UseMicrosoftDependencyInjectionJobFactory();
-
-            configurator.AddJob<FilesDeleteJob>(jobConfigurator =>
+            services.AddQuartz(configurator =>
             {
-                jobConfigurator.WithIdentity(JobKey.Create(jobOptions.JobKey));
-                jobConfigurator.WithDescription(jobOptions.Description);
-            }).AddTrigger(triggerConfigurator =>
-            {
-                triggerConfigurator.ForJob(JobKey.Create(jobOptions.JobKey));
-                triggerConfigurator.WithIdentity(jobOptions.JobKey);
-                triggerConfigurator.WithCronSchedule(jobOptions.CronExpression);
+                configurator.SchedulerName = schedulerOption.Name;
+                configurator.UseMicrosoftDependencyInjectionJobFactory();
             });
-        });
+        }
+        
 
         services.AddSignalR(options =>
         {

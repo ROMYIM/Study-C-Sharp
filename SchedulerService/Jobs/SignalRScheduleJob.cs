@@ -4,13 +4,13 @@ using SchedulerService.Hubs;
 
 namespace SchedulerService.Jobs;
 
-public class ServiceScheduleJob : IJob
+public class SignalRScheduleJob : IJob
 {
     private readonly IHubContext<ServiceHub> _hubContext;
 
     private readonly ILogger _logger;
 
-    public ServiceScheduleJob(IHubContext<ServiceHub> hubContext, ILoggerFactory loggerFactory)
+    public SignalRScheduleJob(IHubContext<ServiceHub> hubContext, ILoggerFactory loggerFactory)
     {
         _hubContext = hubContext;
         _logger = loggerFactory.CreateLogger(GetType());

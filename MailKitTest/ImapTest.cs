@@ -1,17 +1,18 @@
 using System.Threading.Tasks;
 using MailKit;
 using MailKit.Net.Imap;
+using MailKit.Search;
 using Xunit;
 
 namespace MailKitTest;
 
 public class ImapTest
 {
-    private static async Task<ImapClient> CreateClientAndConnectAsync()
+    public static async Task<ImapClient> CreateClientAndConnectAsync()
     {
-        using var imapClient = new ImapClient();
+        var imapClient = new ImapClient();
         await imapClient.ConnectAsync(MailHostOptions.Imap163Host, MailHostOptions.Imap163Port);
-        await imapClient.AuthenticateAsync(MailHostOptions.Imap163Account, MailHostOptions.ImapQqPassword);
+        await imapClient.AuthenticateAsync(MailHostOptions.Imap163Account, MailHostOptions.QqPassword);
         var clientImplementation = new ImapImplementation()
         {
             Name = "Study-C-Sharp",
@@ -36,17 +37,7 @@ public class ImapTest
     [Fact]
     public async Task TestParseMessageUid()
     {
-        using var imapClient = new ImapClient();
-        await imapClient.ConnectAsync(MailHostOptions.Imap163Host, MailHostOptions.Imap163Port);
-        await imapClient.AuthenticateAsync(MailHostOptions.Imap163Account, MailHostOptions.ImapQqPassword);
-        var clientImplementation = new ImapImplementation()
-        {
-            Name = "Study-C-Sharp",
-            Version = "1.0.0",
-            OS = "Windows",
-            OSVersion = "21H2"
-        };
-        await imapClient.IdentifyAsync(clientImplementation);
+        using var imapClient = await CreateClientAndConnectAsync();
         var inbox = imapClient.Inbox;
         await inbox.OpenAsync(FolderAccess.ReadOnly);
 
