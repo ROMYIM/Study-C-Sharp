@@ -1,35 +1,17 @@
-using System.Collections.Specialized;
-using Infrastructure.Models;
 using Quartz;
 using SchedulerService;
 using SchedulerService.Hubs;
-using SchedulerService.Jobs;
 
 IHost host = Host.CreateDefaultBuilder(args)
-    .ConfigureAppConfiguration(builder =>
-        builder.AddJsonFile("filesDelete.json", true, true)
-            .AddJsonFile("schedule.json", true, true))
-    .ConfigureServices((context, services) =>
+    .ConfigureServices(services =>
     {
-        var configuration = context.Configuration;
-        var filesDeleteConfiguration = configuration.GetRequiredSection("FilesDelete");
-        var schedulerConfiguration = configuration.GetRequiredSection("SignalRScheduler");
-        
-        services.AddHostedService<Worker>();
-        services.AddOptions()
-            .Configure<FilesDeleteJobOptions>(filesDeleteConfiguration)
-            .Configure<IEnumerable<SchedulerInfo>>(schedulerConfiguration);
-        var jobOptions = filesDeleteConfiguration.Get<FilesDeleteJobOptions>();
-        var schedulerOptions = schedulerConfiguration.Get<IEnumerable<SchedulerInfo>>();
-        foreach (var schedulerOption in schedulerOptions)
+        services.AddSingleton<SchedulerWorker>();
+        services.AddHostedService<SchedulerWorker>(s => s.GetRequiredService<SchedulerWorker>());
+        services.AddQuartz(configurator =>
         {
-            services.AddQuartz(configurator =>
-            {
-                configurator.SchedulerName = schedulerOption.Name;
-                configurator.UseMicrosoftDependencyInjectionJobFactory();
-            });
-        }
-        
+            configurator.SchedulerName = SchedulerHub.SchedulerName;
+            configurator.UseMicrosoftDependencyInjectionJobFactory();
+        });
 
         services.AddSignalR(options =>
         {
@@ -44,7 +26,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         builder.Configure(app =>
         {
             app.UseRouting();
-            app.UseEndpoints(endpoints => endpoints.MapHub<ServiceHub>("services"));
+            app.UseEndpoints(endpoints => endpoints.MapHub<SchedulerHub>("signalr"));
         });
 
         builder.UseUrls("http://*:5020");

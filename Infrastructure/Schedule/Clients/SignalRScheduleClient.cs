@@ -1,6 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Infrastructure.Models;
+using Infrastructure.Schedule.JobExecutors;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -14,11 +18,16 @@ namespace Infrastructure.Schedule.Clients
 
         private readonly HubConnection _connection;
 
-        public SignalRScheduleClient(ILoggerFactory loggerFactory, IOptions<JobInfo> options)
+        private readonly IServiceProvider _services;
+
+        private IDisposable _hubHandlerRegistries;
+
+        public SignalRScheduleClient(ILoggerFactory loggerFactory, IOptions<JobInfo> options, IServiceProvider services)
         {
             _logger = loggerFactory.CreateLogger(GetType());
             _options = options;
-            
+            _services = services;
+
             var jobInfoOptions = options.Value;
             _connection = new HubConnectionBuilder()
                 .WithUrl(jobInfoOptions.Host)
@@ -27,18 +36,53 @@ namespace Infrastructure.Schedule.Clients
             
         }
 
-        public virtual async Task CreateJobAsync(JobInfo jobInfo)
+        public virtual async Task StartAsync(CancellationToken token = default)
         {
             if (_connection.State == HubConnectionState.Disconnected)
             {
-                await _connection.StartAsync();
+                await _connection.StartAsync(token);
+                _logger.LogInformation("连接成功");
+            }
+        }
+
+        public virtual async Task StopAsync(CancellationToken token = default)
+        {
+            if (_connection.State != HubConnectionState.Disconnected)
+            {
+                await _connection.StopAsync(token);
+                _logger.LogInformation("断开连接");
+            }
+        }
+        
+        public virtual async Task CreateJobAsync(JobInfo jobInfo, CancellationToken token = default)
+        {
+            if (_connection.State == HubConnectionState.Disconnected)
+            {
+                await _connection.StartAsync(token);
                 _logger.LogInformation("连接成功");
             }
             
             jobInfo ??= _options.Value;
-            await _connection.SendAsync(nameof(CreateJobAsync), jobInfo);
+            await _connection.SendAsync(nameof(CreateJobAsync), jobInfo, token);
             _logger.LogInformation("创建任务成功");
         }
-        
+
+        public virtual IDisposable RegisterCallback<T>() where T : IJobExecutor
+        {
+            _hubHandlerRegistries = _connection.On(_options.Value.MethodName, async () =>
+            {
+                var scope = _services.CreateScope();
+                var serviceProvider = scope.ServiceProvider;
+                var jobExecutor = serviceProvider.GetRequiredService<T>();
+                await jobExecutor.ExecuteJobAsync();
+                scope.Dispose();
+            });
+            return _hubHandlerRegistries;
+        }
+
+        public void Dispose()
+        {
+            _hubHandlerRegistries.Dispose();
+        }
     }
 }

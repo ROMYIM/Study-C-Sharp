@@ -14,8 +14,12 @@ namespace Infrastructure.Models
         [Required]
         public string Host { get; set; }
 
+        [Required]
+        public string MethodName { get; set; }
+
         public string Description { get; set; }
 
+        [Obsolete("暂时只支持SignalR。后面考虑统合其他通信方式")]
         public RpcType Rpc { get; set; }
 
         public TimeSpan? KeepAliveInterval { get; set; }

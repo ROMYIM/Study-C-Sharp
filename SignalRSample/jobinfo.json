@@ -3,6 +3,8 @@
     "JobKey": "DemoJob",
     "CronExpression": "0/5 * * * * ? ",
     "Description": "demo任务",
-    "KeepAliveInterval": "00:01:00.000"
+    "KeepAliveInterval": "00:01:00.000",
+    "Host": "http://localhost:5020/signalr",
+    "MethodName": "ExecuteAsync"
   }
 }

@@ -1,5 +1,5 @@
-using Infrastructure.Schedule.Clients;
-using SignalRSample;
+using Infrastructure.Schedule.Extensions;
+using SignalRSample.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<SignalRScheduleClient>();
+builder.Services.AddScheduleJob<TestJobService>(builder.Configuration.GetSection("JobInfo"));
 
 var app = builder.Build();
 
