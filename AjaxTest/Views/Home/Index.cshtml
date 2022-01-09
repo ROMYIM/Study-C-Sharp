@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <button class="btn-link" onclick="wordDownload()">word文档下载</button>
+</div>
+
+@section Scripts
+{
+    <script id="home_index_js" type="text/javascript">
+        function wordDownload() {
+          $.ajax({
+            url: '/home/word',
+            method: 'get',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function(response) {
+               debugger;
+              if (response.success) {
+                  let fileData = base64ToUint8Array(response.data.file);
+                  let filename = response.data.filename;
+                  let blob = new Blob([fileData]); 
+                      if (window.navigator.msSaveOrOpenBlob) {
+                          navigator.msSaveBlob(blob, filename);
+                      } else {
+                          let a = document.createElement('a');
+                          let url = window.URL.createObjectURL(blob);
+                          if (!url) {
+                              url = window.webkitURL.createObjectURL(blob);
+                          }
+                          a.href = url;
+                          a.download = filename;
+                          a.click();
+                          window.URL.revokeObjectURL(url);
+                      }
+              }
+                  
+            }
+          })
+        }
+    </script>
+}

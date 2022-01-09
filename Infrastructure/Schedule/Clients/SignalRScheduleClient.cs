@@ -67,16 +67,9 @@ namespace Infrastructure.Schedule.Clients
             _logger.LogInformation("创建任务成功");
         }
 
-        public virtual IDisposable RegisterCallback<T>() where T : IJobExecutor
+        public virtual IDisposable RegisterJobExecutor(IJobExecutor jobExecutor) 
         {
-            _hubHandlerRegistries = _connection.On(_options.Value.MethodName, async () =>
-            {
-                var scope = _services.CreateScope();
-                var serviceProvider = scope.ServiceProvider;
-                var jobExecutor = serviceProvider.GetRequiredService<T>();
-                await jobExecutor.ExecuteJobAsync();
-                scope.Dispose();
-            });
+            _hubHandlerRegistries = _connection.On(_options.Value.MethodName, jobExecutor.ExecuteJobAsync);
             return _hubHandlerRegistries;
         }
 

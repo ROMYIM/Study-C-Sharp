@@ -19,6 +19,8 @@ namespace Infrastructure.Models
 
         public string Description { get; set; }
 
+        public uint ConcurrentCount { get; set; }
+
         [Obsolete("暂时只支持SignalR。后面考虑统合其他通信方式")]
         public RpcType Rpc { get; set; }
 

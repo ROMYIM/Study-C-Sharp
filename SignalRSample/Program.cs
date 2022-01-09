@@ -12,6 +12,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScheduleJob<TestJobService>(builder.Configuration.GetSection("JobInfo"));
+builder.Services.AddScheduleJob<TestJob2Service>(info =>
+{
+    info.Description = "测试任务2";
+    info.Host = "http://localhost:5020/signalr";
+    info.MethodName = nameof(TestJob2Service);
+    info.JobKey = nameof(TestJob2Service);
+    info.CronExpression = "0/5 * * * * ? ";
+    info.KeepAliveInterval = TimeSpan.FromSeconds(4);
+});
 
 var app = builder.Build();
 

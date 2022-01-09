@@ -14,6 +14,7 @@ public class TestJobService : IJobExecutor
     public async Task ExecuteJobAsync()
     {
         _logger.LogInformation("模拟执行任务");
+        _logger.LogInformation("this is {}", nameof(TestJobService));
         await Task.Delay(TimeSpan.FromSeconds(10));
         _logger.LogInformation("{}", DateTimeOffset.Now);
     }

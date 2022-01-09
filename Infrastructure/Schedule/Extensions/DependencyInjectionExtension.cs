@@ -22,15 +22,23 @@ namespace Infrastructure.Schedule.Extensions
         public static IServiceCollection AddScheduleJob<T>(this IServiceCollection services)
             where T : class, IJobExecutor
         {
+            services.TryAddSingleton<DefaultJobExecutor<T>>();
+            services.TryAddSingleton<IExceptionHandleJobExecutor<T>>(s => s.GetRequiredService<DefaultJobExecutor<T>>());
+            services.AddSingleton<IExceptionHandleJobExecutor, DefaultJobExecutor<T>>(s =>
+                s.GetRequiredService<DefaultJobExecutor<T>>());
+
             services.TryAddSingleton<SignalRScheduleClient>();
             services.TryAddSingleton<IScheduleClient>(s =>
             {
                 var client = s.GetRequiredService<SignalRScheduleClient>();
-                client.RegisterCallback<T>();
+                var jobExecutor = s.GetRequiredService<IExceptionHandleJobExecutor<T>>();
+                client.RegisterJobExecutor(jobExecutor);
                 return client;
             });
+            
             services.TryAddSingleton<SignalRScheduleWorker>();
             services.AddHostedService(s => s.GetRequiredService<SignalRScheduleWorker>());
+            
             services.TryAddScoped<T>();
             return services;
         }

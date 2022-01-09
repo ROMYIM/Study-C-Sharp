@@ -4,6 +4,6 @@ namespace Infrastructure.Schedule.JobExecutors
 {
     public interface IJobExecutor
     {
-        public Task ExecuteJobAsync();
+        Task ExecuteJobAsync();
     }
 }
