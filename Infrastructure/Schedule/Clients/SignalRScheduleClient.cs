@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Infrastructure.Models;
 using Infrastructure.Schedule.JobExecutors;
+using Infrastructure.Schedule.Options;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,7 +14,7 @@ namespace Infrastructure.Schedule.Clients
     {
         private readonly ILogger _logger;
 
-        private readonly IOptions<JobInfo> _options;
+        private readonly IOptions<SignalRClientOptions> _clientOptions;
 
         private readonly HubConnection _connection;
 
@@ -22,18 +22,23 @@ namespace Infrastructure.Schedule.Clients
 
         private IDisposable _hubHandlerRegistries;
 
-        public SignalRScheduleClient(ILoggerFactory loggerFactory, IOptions<JobInfo> options, IServiceProvider services)
+        public SignalRScheduleClient(
+            ILoggerFactory loggerFactory, 
+            IOptions<SignalRClientOptions> clientOptions,
+            IServiceProvider services)
         {
             _logger = loggerFactory.CreateLogger(GetType());
-            _options = options;
+            _clientOptions = clientOptions;
             _services = services;
 
-            var jobInfoOptions = options.Value;
+            var clientConnectOptions = _clientOptions.Value;
             _connection = new HubConnectionBuilder()
-                .WithUrl(jobInfoOptions.Host)
+                .WithUrl(clientConnectOptions.Host)
                 .WithAutomaticReconnect()
                 .Build();
-            
+            _connection.HandshakeTimeout = clientConnectOptions.HandShakeTimeout;
+            _connection.KeepAliveInterval = clientConnectOptions.KeepAliveInterval;
+            _connection.ServerTimeout = clientConnectOptions.ServerTimeout;
         }
 
         public virtual async Task StartAsync(CancellationToken token = default)
@@ -62,21 +67,14 @@ namespace Infrastructure.Schedule.Clients
                 _logger.LogInformation("连接成功");
             }
             
-            jobInfo ??= _options.Value;
             await _connection.SendAsync(nameof(CreateJobAsync), jobInfo, token);
             _logger.LogInformation("创建任务成功");
         }
 
-        public virtual IDisposable RegisterCallback<T>() where T : IJobExecutor
+        public virtual IDisposable RegisterJobExecutor<T>(JobInfo jobInfo) where T : IJobExecutor
         {
-            _hubHandlerRegistries = _connection.On(_options.Value.MethodName, async () =>
-            {
-                var scope = _services.CreateScope();
-                var serviceProvider = scope.ServiceProvider;
-                var jobExecutor = serviceProvider.GetRequiredService<T>();
-                await jobExecutor.ExecuteJobAsync();
-                scope.Dispose();
-            });
+            var jobExecutor = _services.GetRequiredService<T>();
+            _hubHandlerRegistries = _connection.On(jobInfo.MethodName, jobExecutor.ExecuteJobAsync);
             return _hubHandlerRegistries;
         }
 

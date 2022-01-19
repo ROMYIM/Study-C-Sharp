@@ -1,6 +1,6 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using Infrastructure.Models;
 using Infrastructure.Schedule.Clients;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -14,9 +14,9 @@ namespace Infrastructure.Schedule.BackgroundServices
 
         private readonly ILogger _logger;
 
-        private readonly IOptions<JobInfo> _options;
+        private readonly IOptionsMonitor<JobInfo> _options;
 
-        public SignalRScheduleWorker(IScheduleClient client, ILoggerFactory loggerFactory, IOptions<JobInfo> options)
+        public SignalRScheduleWorker(IScheduleClient client, ILoggerFactory loggerFactory, IOptionsMonitor<JobInfo> options)
         {
             _client = client;
             _options = options;
@@ -26,7 +26,10 @@ namespace Infrastructure.Schedule.BackgroundServices
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
             if (_client is SignalRScheduleClient signalRScheduleClient)
+            {
+
                 await signalRScheduleClient.StartAsync(cancellationToken);
+            }
             await base.StartAsync(cancellationToken);
         }
 

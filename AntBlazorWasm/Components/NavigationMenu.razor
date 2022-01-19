@@ -6,7 +6,7 @@
 
 <Menu Mode="MenuMode.Inline"
       OpenKeys=this.openKeys
-      OnOpenChange=this.onOpenChange
+      OnOpenChange=this.OnOpenChange
       Style="width:256px ;">
 
     @renderMenus(_menus)
@@ -84,7 +84,7 @@
         </template>;
     }
     
-    void onOpenChange(string[] openKeys)
+    void OnOpenChange(string[] openKeys)
     {
         var latestOpenKey = openKeys.FirstOrDefault(key => !this.openKeys.Contains(key));
         if (!rootSubmenuKeys.Contains(latestOpenKey))
