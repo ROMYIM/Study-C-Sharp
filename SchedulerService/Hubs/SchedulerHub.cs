@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using Infrastructure.Models;
+using Infrastructure.Schedule;
 using Microsoft.AspNetCore.SignalR;
 using Quartz;
 using SchedulerService.Jobs;
@@ -41,8 +41,15 @@ public class SchedulerHub : Hub
                 .Build();
 
             await scheduler.ScheduleJob(newJob, trigger);
-            Context.Items["JobKey"] = jobKey;
-            _logger.LogInformation("创建任务成功");
+            if (Context.Items["JobKeys"] is ISet<JobKey> jobKeys)
+                jobKeys.Add(jobKey);
+            else
+            {
+                jobKeys = new HashSet<JobKey>();
+                jobKeys.Add(jobKey);
+                Context.Items["JobKeys"] = jobKeys;
+            }
+            _logger.LogInformation("创建任务[{}]成功", jobKey);
             _logger.LogInformation("调度策略:{}", jobInfo.CronExpression);
         }
     }
@@ -51,14 +58,19 @@ public class SchedulerHub : Hub
     {
         _logger.LogInformation("连接[{}]断开", Context.ConnectionId);
         
-        if (Context.Items.TryGetValue("JobKey", out var jobKeyObject))
+        if (Context.Items.TryGetValue("JobKeys", out var keys))
         {
             var scheduler = await _schedulerWorker.GetSchedulerAsync(SchedulerName);
-            var jobKey = (JobKey) jobKeyObject!;
-            var result = await scheduler.DeleteJob(jobKey);
-            Debug.Assert(result, "delete job failed");
-            Context.Items.Remove("JobKey");
-            _logger.LogInformation("移除任务[{}]", jobKey);
+            if (keys is ISet<JobKey> jobKeys)
+            {
+                foreach (var jobKey in jobKeys)
+                {
+                    var result = await scheduler.DeleteJob(jobKey);
+                    Debug.Assert(result, "delete job failed");
+                    Context.Items.Remove("JobKey");
+                    _logger.LogInformation("移除任务[{}]。成功[{}]", jobKey, result);
+                }
+            }
         }
         await base.OnDisconnectedAsync(exception);
     }

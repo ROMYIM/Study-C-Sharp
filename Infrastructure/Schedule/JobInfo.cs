@@ -13,9 +13,6 @@ namespace Infrastructure.Schedule
         [Required]
         public virtual string CronExpression { get; set; }
 
-        [Required]
-        public virtual string Host { get; set; }
-        
         public virtual string MethodName { get; set; }
 
         public virtual string Description { get; set; }
@@ -27,7 +24,6 @@ namespace Infrastructure.Schedule
         {
             base.JobKey = jobInfo.JobKey;
             base.CronExpression = jobInfo.CronExpression;
-            base.Host = jobInfo.Host;
             base.Description = jobInfo.Description;
         }
         

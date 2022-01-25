@@ -8,8 +8,11 @@ namespace Infrastructure.Schedule.Clients
 {
     public interface IScheduleClient : IDisposable
     {
-        Task CreateJobAsync(JobInfo jobInfo, CancellationToken token);
+        Task StartAsync(CancellationToken token);
 
-        IDisposable RegisterJobExecutor<T>(JobInfo jobInfo) where T : IJobExecutor;
+        Task StopAsync(CancellationToken token);
+        
+        Task CreateJobAsync(JobInfo jobInfo, CancellationToken token);
+        
     }
 }
