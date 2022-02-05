@@ -18,4 +18,9 @@ public class TestJobService : IJobExecutor
         await Task.Delay(TimeSpan.FromSeconds(10));
         _logger.LogInformation("{}", DateTimeOffset.Now);
     }
+
+    public void Dispose()
+    {
+        // throw new NotImplementedException();
+    }
 }

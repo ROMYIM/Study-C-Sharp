@@ -1,4 +1,5 @@
 using Infrastructure.Schedule.Extensions;
+using Infrastructure.Schedule.Options;
 using SignalRSample.Services;
 
 var builder = WebApplication.CreateBuilder(args);

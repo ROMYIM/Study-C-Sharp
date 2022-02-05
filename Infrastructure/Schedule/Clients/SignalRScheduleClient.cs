@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Infrastructure.Models;
 using Infrastructure.Schedule.JobExecutors;
+using Infrastructure.Schedule.Options;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -81,6 +82,17 @@ namespace Infrastructure.Schedule.Clients
             
             await _connection.SendAsync(nameof(CreateJobAsync), jobInfo, token);
             _logger.LogInformation("创建任务成功");
+        }
+
+        public async Task ReturnResultAsync(JobExecuteResult jobResult, CancellationToken token)
+        {
+            if (_connection.State == HubConnectionState.Connected)
+            {
+                await _connection.SendAsync(nameof(ReturnResultAsync), jobResult, token);
+                _logger.LogInformation("任务结果回传");
+            }
+            
+            _logger.LogCritical("连接断开。无法回传结果");
         }
 
         public virtual IDisposable RegisterJobExecutor(JobOptions jobOptions)

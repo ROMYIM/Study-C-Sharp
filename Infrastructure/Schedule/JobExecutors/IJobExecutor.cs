@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Schedule.JobExecutors
 {
-    public interface IJobExecutor
+    public interface IJobExecutor : IDisposable
     {
         Task ExecuteJobAsync();
     }
@@ -31,4 +31,35 @@ namespace Infrastructure.Schedule.JobExecutors
             }
         }
     }
+
+    // public interface IJobExecutor<T> : IJobExecutor where T : IJobExecutor
+    // {
+    //     IServiceProvider ServiceProvider { get; }
+    //     
+    //     ILogger Logger { get; }
+    //     
+    //     IJobExceptionHandler<T> ExceptionHandler { get; }
+    //
+    //     async Task IJobExecutor.ExecuteJobAsync()
+    //     {
+    //         var scope = ServiceProvider.CreateScope();
+    //         try
+    //         {
+    //             var serviceProvider = scope.ServiceProvider;
+    //             var jobExecutor = serviceProvider.GetRequiredService<T>();
+    //             await jobExecutor.ExecuteJobAsync();
+    //             
+    //         }
+    //         catch (Exception e)
+    //         {
+    //             ExceptionHandler.IncrementErrorExecuteCount();
+    //             await ExceptionHandler.HandleExceptionAsync(e);
+    //         }
+    //         finally
+    //         {
+    //             ExceptionHandler.IncrementTotalExecuteCount();
+    //             scope.Dispose();
+    //         }
+    //     }
+    // }
 }

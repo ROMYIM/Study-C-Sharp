@@ -19,4 +19,9 @@ public class StopHostJob : IJobExecutor
         _logger.LogInformation("结束进程");
         await _host.StopAsync();
     }
+
+    public void Dispose()
+    {
+        
+    }
 }

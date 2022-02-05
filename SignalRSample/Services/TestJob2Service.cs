@@ -16,4 +16,9 @@ public class TestJob2Service : IJobExecutor
         _logger.LogInformation("this is {}", nameof(TestJob2Service));
         return Task.CompletedTask;
     }
+
+    public void Dispose()
+    {
+        // throw new NotImplementedException();
+    }
 }
