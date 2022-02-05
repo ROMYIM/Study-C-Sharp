@@ -1,7 +1,8 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using Infrastructure.Models;
 using Infrastructure.Schedule.Clients;
+using Infrastructure.Schedule.Options;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -13,20 +14,22 @@ namespace Infrastructure.Schedule.BackgroundServices
         private readonly IScheduleClient _client;
 
         private readonly ILogger _logger;
+        
+        private readonly IOptions<ScheduleOptions> _scheduleOptions;
 
-        private readonly IOptions<JobInfo> _options;
+        private readonly IOptionsMonitor<JobInfo> _jogInfoOptions;
 
-        public SignalRScheduleWorker(IScheduleClient client, ILoggerFactory loggerFactory, IOptions<JobInfo> options)
+        public SignalRScheduleWorker(IScheduleClient client, ILoggerFactory loggerFactory, IOptions<ScheduleOptions> scheduleOptions, IOptionsMonitor<JobInfo> jogInfoOptions)
         {
             _client = client;
-            _options = options;
+            _scheduleOptions = scheduleOptions;
+            _jogInfoOptions = jogInfoOptions;
             _logger = loggerFactory.CreateLogger(GetType());
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
-            if (_client is SignalRScheduleClient signalRScheduleClient)
-                await signalRScheduleClient.StartAsync(cancellationToken);
+            await _client.StartAsync(cancellationToken);
             await base.StartAsync(cancellationToken);
         }
 
@@ -43,11 +46,19 @@ namespace Infrastructure.Schedule.BackgroundServices
             base.Dispose();
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var jobInfo = _options.Value;
-            await _client.CreateJobAsync(jobInfo, stoppingToken);
-            _logger.LogInformation("向调度服务注册任务信息");
+            var scheduleOptions = _scheduleOptions.Value;
+            var createJobTasks = new List<Task>(scheduleOptions.JobOptionsList.Count);
+            foreach (var jobOptions in scheduleOptions.JobOptionsList)
+            {
+                var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
+                var jobInfo = _jogInfoOptions.Get(jobOptions.Name);
+                createJobTasks.Add(_client.CreateJobAsync(jobInfo, cts.Token));
+                _logger.LogInformation("向调度服务注册[{}]信息", jobInfo.JobKey);
+            }
+
+            return Task.WhenAll(createJobTasks);
         }
     }
 }

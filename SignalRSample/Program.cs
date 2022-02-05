@@ -11,16 +11,16 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScheduleJob<TestJobService>(builder.Configuration.GetSection("JobInfo"));
-builder.Services.AddScheduleJob<TestJob2Service>(info =>
+builder.Services.AddSchedule(options =>
 {
-    info.Description = "测试任务2";
-    info.Host = "http://localhost:5020/signalr";
-    info.MethodName = nameof(TestJob2Service);
-    info.JobKey = nameof(TestJob2Service);
-    info.CronExpression = "0/5 * * * * ? ";
-    info.KeepAliveInterval = TimeSpan.FromSeconds(4);
-});
+    options.SignalRClientOptions = new SignalRClientOptions()
+    {
+        Host = "http://localhost:5020/signalr",
+        HandShakeTimeout = TimeSpan.FromSeconds(10),
+        KeepAliveInterval = TimeSpan.FromMinutes(1),
+        ServerTimeout = TimeSpan.FromSeconds(10)
+    };
+}).AddScheduleJob<TestJobService>("JobInfo", builder.Configuration.GetSection("JobInfo"));
 
 var app = builder.Build();
 

@@ -3,16 +3,16 @@ using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Schedule.JobExecutors
 {
-    public class DefaultJobExecutor<T> : IExceptionHandleJobExecutor<T> where T : IJobExecutor
+    public class DefaultJobExecutor<T> : IJobExecutor<T> where T : IJobExecutor
     {
-        public IServiceProvider ServiceProvider { get; }
+        public IServiceProvider Services { get; }
         
         public ILogger Logger { get; }
 
-        public DefaultJobExecutor(IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
+        public DefaultJobExecutor(IServiceProvider services, ILoggerFactory loggerFactory)
         {
-            ServiceProvider = serviceProvider;
-            Logger = loggerFactory.CreateLogger(typeof(IExceptionHandleJobExecutor));
+            Services = services;
+            Logger = loggerFactory.CreateLogger(nameof(T));
         }
     }
 }
