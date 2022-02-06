@@ -17,13 +17,10 @@ namespace Infrastructure.Schedule.BackgroundServices
         
         private readonly IOptions<ScheduleOptions> _scheduleOptions;
 
-        private readonly IOptionsMonitor<JobInfo> _jogInfoOptions;
-
-        public SignalRScheduleWorker(IScheduleClient client, ILoggerFactory loggerFactory, IOptions<ScheduleOptions> scheduleOptions, IOptionsMonitor<JobInfo> jogInfoOptions)
+        public SignalRScheduleWorker(IScheduleClient client, ILoggerFactory loggerFactory, IOptions<ScheduleOptions> scheduleOptions)
         {
             _client = client;
             _scheduleOptions = scheduleOptions;
-            _jogInfoOptions = jogInfoOptions;
             _logger = loggerFactory.CreateLogger(GetType());
         }
 
@@ -49,11 +46,11 @@ namespace Infrastructure.Schedule.BackgroundServices
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var scheduleOptions = _scheduleOptions.Value;
-            var createJobTasks = new List<Task>(scheduleOptions.JobOptionsList.Count);
-            foreach (var jobOptions in scheduleOptions.JobOptionsList)
+            var createJobTasks = new List<Task>(scheduleOptions.JobOptionsMap.Count);
+            foreach (var jobOptions in scheduleOptions.JobOptionsMap.Values)
             {
                 var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
-                var jobInfo = _jogInfoOptions.Get(jobOptions.Name);
+                var jobInfo = jobOptions.JobInfo;
                 createJobTasks.Add(_client.CreateJobAsync(jobInfo, cts.Token));
                 _logger.LogInformation("向调度服务注册[{}]信息", jobInfo.JobKey);
             }

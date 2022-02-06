@@ -17,8 +17,6 @@ namespace Infrastructure.Schedule.Clients
 
         private readonly IOptions<ScheduleOptions> _scheduleOptions;
 
-        private readonly IOptionsMonitor<JobInfo> _jogInfoOptions;
-
         private readonly HubConnection _connection;
 
         private readonly IServiceProvider _services;
@@ -36,12 +34,11 @@ namespace Infrastructure.Schedule.Clients
             _logger = loggerFactory.CreateLogger(GetType());
             _services = services;
             _scheduleOptions = scheduleOptions;
-            _jogInfoOptions = jogInfoOptions;
             _defaultJobExecutorType = typeof(IJobExecutor<>);
 
             var clientOptions = scheduleOptions.Value.SignalRClientOptions;
             _connection = new HubConnectionBuilder()
-                .WithUrl(clientOptions.Host)
+                .WithUrl($"{clientOptions.Host}/schedule")
                 .WithAutomaticReconnect()
                 .Build();
             _connection.HandshakeTimeout = clientOptions.HandShakeTimeout;
@@ -52,7 +49,7 @@ namespace Infrastructure.Schedule.Clients
         public virtual async Task StartAsync(CancellationToken token = default)
         {
             var scheduleOptions = _scheduleOptions.Value;
-            foreach (var jobOptions in scheduleOptions.JobOptionsList)
+            foreach (var jobOptions in scheduleOptions.JobOptionsMap.Values)
             {
                 _hubHandlerRegistries = RegisterJobExecutor(jobOptions);
             }
@@ -97,10 +94,9 @@ namespace Infrastructure.Schedule.Clients
 
         public virtual IDisposable RegisterJobExecutor(JobOptions jobOptions)
         {
-            var jobInfo = _jogInfoOptions.Get(jobOptions.Name);
             var jobExecutorType = _defaultJobExecutorType.MakeGenericType(jobOptions.ExecutorType);
             var jobExecutor = (IJobExecutor) _services.GetRequiredService(jobExecutorType);
-            return _connection.On(jobInfo.MethodName, jobExecutor.ExecuteJobAsync);
+            return _connection.On(jobOptions.JobInfo.MethodName, jobExecutor.ExecuteJobAsync);
         }
 
         public void Dispose()

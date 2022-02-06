@@ -26,7 +26,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         builder.Configure(app =>
         {
             app.UseRouting();
-            app.UseEndpoints(endpoints => endpoints.MapHub<SchedulerHub>("signalr"));
+            app.UseEndpoints(endpoints => endpoints.MapHub<SchedulerHub>("schedule"));
         });
 
         builder.UseUrls("http://*:5020");

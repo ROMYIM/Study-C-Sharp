@@ -5,7 +5,7 @@ namespace Infrastructure.Schedule.Options
     public class ScheduleOptions
     {
         public SignalRClientOptions SignalRClientOptions { get; set; } = new SignalRClientOptions();
-        
-        public IList<JobOptions> JobOptionsList { get; } = new List<JobOptions>();
+
+        public IDictionary<string, JobOptions> JobOptionsMap { get; } = new Dictionary<string, JobOptions>();
     }
 }

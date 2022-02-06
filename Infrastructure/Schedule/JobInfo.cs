@@ -16,16 +16,29 @@ namespace Infrastructure.Schedule
         public virtual string MethodName { get; set; }
 
         public virtual string Description { get; set; }
+
+        public virtual JobInfo New(JobInfo jobInfo)
+        {
+            if (jobInfo == null) throw new ArgumentNullException(nameof(jobInfo));
+            
+            JobKey = jobInfo.JobKey;
+            CronExpression = jobInfo.CronExpression;
+            MethodName = jobInfo.MethodName;
+            Description = jobInfo.Description;
+
+            return this;
+        }
     }
 
     public class JobInfo<T> : JobInfo where T : IJobExecutor
     {
-        public JobInfo(JobInfo jobInfo)
-        {
-            base.JobKey = jobInfo.JobKey;
-            base.CronExpression = jobInfo.CronExpression;
-            base.Description = jobInfo.Description;
-        }
+        [Required]
+        public override string JobKey { get; set; }
+
+        [Required]
+        public override string CronExpression { get; set; }
+        
+        public override string Description { get; set; }
         
         public override string MethodName => typeof(T).FullName;
     }
