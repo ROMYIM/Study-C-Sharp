@@ -43,7 +43,7 @@ namespace Infrastructure.Schedule.Logging
             _connectTask = _connection.StartAsync();
             _connectTask.Start();
 
-            PushLogContentsAsync();
+            PostLogsAsync();
         }
 
         public void Dispose()
@@ -77,6 +77,11 @@ namespace Infrastructure.Schedule.Logging
             }
         }
 
+        internal bool PushLogInfo(string logInfo)
+        {
+            return !string.IsNullOrWhiteSpace(logInfo) && _logs.TryAdd(logInfo);
+        }
+
         private Task StartLoggingAsync()
         {
             Interlocked.Exchange(ref _isEnabled, 1);
@@ -89,7 +94,7 @@ namespace Infrastructure.Schedule.Logging
             return Task.CompletedTask;
         }
 
-        private Task PushLogContentsAsync()
+        private Task PostLogsAsync()
         {
             return Task.Factory.StartNew(async loggerProvider =>
             {
@@ -97,7 +102,7 @@ namespace Infrastructure.Schedule.Logging
                 while (scheduleLoggerProvider.IsEnabled && scheduleLoggerProvider._logs.TryTake(out var logContent))
                 {
 
-                    await _connection.SendAsync("PostLogsAsync", logContent);
+                    await _connection.SendAsync(nameof(PostLogsAsync), logContent);
                 }
             },  this, TaskCreationOptions.LongRunning);
         }
