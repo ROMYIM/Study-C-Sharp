@@ -13,6 +13,8 @@ namespace Infrastructure.Schedule.Clients
         Task StopAsync(CancellationToken token);
         
         Task CreateJobAsync(JobInfo jobInfo, CancellationToken token);
-        
+
+        Task ReturnResultAsync(JobExecuteResult jobResult, CancellationToken token);
+
     }
 }

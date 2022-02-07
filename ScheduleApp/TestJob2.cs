@@ -16,4 +16,9 @@ public class TestJob2 : IJobExecutor
         _logger.LogInformation("第二个模拟任务测试");
         return Task.CompletedTask;
     }
+
+    public void Dispose()
+    {
+        // throw new NotImplementedException();
+    }
 }

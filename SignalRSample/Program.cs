@@ -16,7 +16,7 @@ builder.Services.AddSchedule(options =>
 {
     options.SignalRClientOptions = new SignalRClientOptions()
     {
-        Host = "http://localhost:5020/signalr",
+        Host = "http://localhost:5020",
         HandShakeTimeout = TimeSpan.FromSeconds(10),
         KeepAliveInterval = TimeSpan.FromMinutes(1),
         ServerTimeout = TimeSpan.FromSeconds(10)

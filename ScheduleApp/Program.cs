@@ -8,7 +8,7 @@ builder.Services.AddSchedule(options =>
 {
     options.SignalRClientOptions = new SignalRClientOptions()
     {
-        Host = "http://localhost:5020/signalr",
+        Host = "http://localhost:5020",
         HandShakeTimeout = TimeSpan.FromSeconds(10),
         KeepAliveInterval = TimeSpan.FromMinutes(1),
         ServerTimeout = TimeSpan.FromSeconds(10)
@@ -18,13 +18,12 @@ builder.Services.AddSchedule(options =>
     info.Description = "第二个模拟测试的任务";
     info.CronExpression = "0/5 * * * * ? ";
     info.JobKey = "Demo2";
-    info.MethodName = "Demo2Execute";
+    
 }).AddScheduleJob<StopHostJob>("StopHost", info =>
 {
     info.Description = "模拟结束进程";
     info.CronExpression = "0/30 * * * * ? ";
     info.JobKey = "stop test";
-    info.MethodName = "stop host";
 });
 
 var app = builder.Build();

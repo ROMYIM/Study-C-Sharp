@@ -1,4 +1,5 @@
 ﻿using System;
+using Infrastructure.Models;
 using Infrastructure.Schedule.BackgroundServices;
 using Infrastructure.Schedule.Builders.DependencyInjection;
 using Infrastructure.Schedule.Clients;
@@ -7,6 +8,7 @@ using Infrastructure.Schedule.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Schedule.Extensions
 {
@@ -17,32 +19,35 @@ namespace Infrastructure.Schedule.Extensions
         /// </summary>
         /// <param name="serviceBuilder">调度服务构建者<seealso cref="ScheduleServiceBuilder"/></param>
         /// <param name="jobName">调度任务选项对应的任务名称。任务名称必须唯一。不同的调度任务需要以该名称做区分</param>
-        /// <param name="jobInfoBuilder">配置调度任务信息的委托</param>
+        /// <param name="buildJobInfo">配置调度任务信息的委托</param>
         /// <typeparam name="T">调度任务对应的类型参数<seealso cref="IJobExecutor"/></typeparam>
         /// <returns>调度服务构建者</returns>
         /// <exception cref="ArgumentNullException">选项对应的名称为空或者配置任务信息的委托为空</exception>
-        public static ScheduleServiceBuilder AddScheduleJob<T>(this ScheduleServiceBuilder serviceBuilder, string jobName, Action<JobInfo> jobInfoBuilder) 
+        public static ScheduleServiceBuilder AddScheduleJob<T>(this ScheduleServiceBuilder serviceBuilder, string jobName, Action<JobInfo<T>> buildJobInfo) 
             where T : class, IJobExecutor
         {
-            if (jobInfoBuilder == null) throw new ArgumentNullException(nameof(jobInfoBuilder));
+            if (buildJobInfo == null) throw new ArgumentNullException(nameof(buildJobInfo));
             if (jobName == null) throw new ArgumentNullException(nameof(jobName));
             
             var services = serviceBuilder.Services;
-            services.AddOptions<JobInfo>(jobName).Configure(jobInfoBuilder).ValidateDataAnnotations();
+            services.AddOptions<JobInfo<T>>(jobName).Configure(buildJobInfo).ValidateDataAnnotations();
             services.TryAddScoped<T>();
             services.TryAddSingleton<IJobExecutor<T>, DefaultJobExecutor<T>>();
             
-            var optionsBuilder = serviceBuilder.OptionsBuilder;
-            optionsBuilder.PostConfigure(options =>
+            var scheduleOptionsBuilder = serviceBuilder.ScheduleOptionsBuilder;
+            scheduleOptionsBuilder.PostConfigure<IOptionsMonitor<JobInfo<T>>>((options, jobInfoOptions) =>
             {
+                var jobInfo = jobInfoOptions.Get(jobName);
+                buildJobInfo(jobInfo);
                 var jobOptions = new JobOptions()
                 {
                     ExecutorType = typeof(T),
-                    Name = jobName
+                    Name = jobName,
+                    JobInfo = jobInfo
                 };
-                options.JobOptionsList.Add(jobOptions);
+                options.JobOptionsMap[jobName] = jobOptions;
             });
-            
+
             return serviceBuilder;
         }
 
@@ -61,19 +66,21 @@ namespace Infrastructure.Schedule.Extensions
             if (jobName == null) throw new ArgumentNullException(nameof(jobName));
             
             var services = serviceBuilder.Services;
-            services.AddOptions<JobInfo>(jobName).Bind(configuration).ValidateDataAnnotations();
+            services.AddOptions<JobInfo<T>>(jobName).Bind(configuration).ValidateDataAnnotations();
             services.TryAddScoped<T>();
             services.TryAddSingleton<IJobExecutor<T>, DefaultJobExecutor<T>>();
             
-            var optionsBuilder = serviceBuilder.OptionsBuilder;
-            optionsBuilder.PostConfigure(options =>
+            var scheduleOptionsBuilder = serviceBuilder.ScheduleOptionsBuilder;
+            scheduleOptionsBuilder.PostConfigure<IOptionsMonitor<JobInfo<T>>>((options, jobInfoOptions) =>
             {
+                var jobInfo = jobInfoOptions.Get(jobName);
                 var jobOptions = new JobOptions()
                 {
                     ExecutorType = typeof(T),
-                    Name = jobName
+                    Name = jobName,
+                    JobInfo = jobInfo
                 };
-                options.JobOptionsList.Add(jobOptions);
+                options.JobOptionsMap[jobName] = jobOptions;
             });
             return serviceBuilder;
         }
@@ -91,12 +98,12 @@ namespace Infrastructure.Schedule.Extensions
         public static ScheduleServiceBuilder AddSchedule(this IServiceCollection services, Action<ScheduleOptions> configureScheduleOptions)
         {
             if (configureScheduleOptions == null) throw new ArgumentNullException(nameof(configureScheduleOptions));
-            var optionsBuilder = services.AddOptions<ScheduleOptions>().Configure(configureScheduleOptions);
-            services.AddOptions<JobInfo>();
+            var scheduleOptionsBuilder = services.AddOptions<ScheduleOptions>().Configure(configureScheduleOptions);
+            var jobInfoOptionsBuilder = services.AddOptions<JobInfo>();
             services.TryAddSingleton<IScheduleClient, SignalRScheduleClient>();
             services.TryAddSingleton<SignalRScheduleWorker>();
             services.AddHostedService(s => s.GetRequiredService<SignalRScheduleWorker>());
-            return new ScheduleServiceBuilder(services, optionsBuilder);
+            return new ScheduleServiceBuilder(services, scheduleOptionsBuilder, jobInfoOptionsBuilder);
         }
     }
 }

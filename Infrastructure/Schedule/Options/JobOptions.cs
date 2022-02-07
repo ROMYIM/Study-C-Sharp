@@ -7,5 +7,7 @@ namespace Infrastructure.Schedule.Options
         public string Name { get; set; }
 
         public Type ExecutorType { get; set; }
+
+        public JobInfo JobInfo { get; set; }
     }
 }

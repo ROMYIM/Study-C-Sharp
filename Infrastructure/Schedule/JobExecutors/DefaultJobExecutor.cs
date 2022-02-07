@@ -14,5 +14,10 @@ namespace Infrastructure.Schedule.JobExecutors
             Services = services;
             Logger = loggerFactory.CreateLogger(nameof(T));
         }
+
+        public void Dispose()
+        {
+            // throw new NotImplementedException();
+        }
     }
 }
