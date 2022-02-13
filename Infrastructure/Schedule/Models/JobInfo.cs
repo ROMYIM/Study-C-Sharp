@@ -1,9 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Infrastructure.Models;
 using Infrastructure.Schedule.JobExecutors;
 
-namespace Infrastructure.Schedule
+namespace Infrastructure.Schedule.Models
 {
     public class JobInfo
     {

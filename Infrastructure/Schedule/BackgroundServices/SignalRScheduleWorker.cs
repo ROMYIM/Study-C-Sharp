@@ -32,14 +32,13 @@ namespace Infrastructure.Schedule.BackgroundServices
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            if (_client is SignalRScheduleClient signalRScheduleClient)
-                await signalRScheduleClient.StopAsync(cancellationToken);
+            await _client.StopAsync(cancellationToken);
             await base.StopAsync(cancellationToken);
         }
 
         public override void Dispose()
         {
-            _client.Dispose();
+            _client.DisposeAsync().GetAwaiter().GetResult();
             base.Dispose();
         }
 

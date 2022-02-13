@@ -1,16 +1,13 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Infrastructure.Models;
-using Infrastructure.Schedule.JobExecutors;
+using Infrastructure.Schedule.Models;
 
 namespace Infrastructure.Schedule.Clients
 {
-    public interface IScheduleClient : IDisposable
+    public interface IScheduleClient : ISignalRClient
     {
-        Task StartAsync(CancellationToken token);
-
-        Task StopAsync(CancellationToken token);
+        const string HubName = "Schedule";
         
         Task CreateJobAsync(JobInfo jobInfo, CancellationToken token);
 

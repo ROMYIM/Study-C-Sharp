@@ -1,4 +1,5 @@
-﻿using Infrastructure.Schedule.Options;
+﻿using Infrastructure.Schedule.Models;
+using Infrastructure.Schedule.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

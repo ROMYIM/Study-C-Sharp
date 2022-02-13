@@ -1,5 +1,4 @@
 using Infrastructure.Schedule.Extensions;
-using Infrastructure.Schedule.Options;
 using SignalRSample.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,13 +13,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSchedule(options =>
 {
-    options.SignalRClientOptions = new SignalRClientOptions()
-    {
-        Host = "http://localhost:5020",
-        HandShakeTimeout = TimeSpan.FromSeconds(10),
-        KeepAliveInterval = TimeSpan.FromMinutes(1),
-        ServerTimeout = TimeSpan.FromSeconds(10)
-    };
+    options.Host = "http://localhost:5020";
+    options.HandShakeTimeout = TimeSpan.FromSeconds(10);
+    options.KeepAliveInterval = TimeSpan.FromMinutes(1);
+    options.ServerTimeout = TimeSpan.FromSeconds(10);
 }).AddScheduleJob<TestJobService>("JobInfo", builder.Configuration.GetSection("JobInfo"));
 
 var app = builder.Build();

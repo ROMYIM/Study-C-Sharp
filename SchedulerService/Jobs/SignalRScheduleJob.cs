@@ -31,6 +31,7 @@ public class SignalRScheduleJob : IJob
             throw new KeyNotFoundException("没有找到对应的回调方法");
 
         await _hubContext.Clients.Client(connectionId).SendAsync(methodName);
+        using var logScope = _logger.BeginScope(connectionId);
         _logger.LogInformation("{}", DateTimeOffset.Now);
     }
 }

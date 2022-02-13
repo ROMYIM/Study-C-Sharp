@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Infrastructure.Models;
 using Infrastructure.Schedule.JobExecutors;
+using Infrastructure.Schedule.Models;
 using Infrastructure.Schedule.Options;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,13 +12,13 @@ using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Schedule.Clients
 {
-    public class SignalRScheduleClient : IScheduleClient
+    internal class SignalRScheduleClient : IScheduleClient
     {
         private readonly ILogger _logger;
 
-        private readonly IOptions<ScheduleOptions> _scheduleOptions;
+        private readonly ISignalRClient _client;
 
-        private readonly HubConnection _connection;
+        private readonly IOptions<ScheduleOptions> _scheduleOptions;
 
         private readonly IServiceProvider _services;
 
@@ -28,23 +29,17 @@ namespace Infrastructure.Schedule.Clients
         public SignalRScheduleClient(
             ILoggerFactory loggerFactory, 
             IServiceProvider services,
-            IOptions<ScheduleOptions> scheduleOptions, 
-            IOptionsMonitor<JobInfo> jogInfoOptions)
+            IOptions<ScheduleOptions> scheduleOptions, SignalRClientFactory clientFactory)
         {
             _logger = loggerFactory.CreateLogger(GetType());
             _services = services;
             _scheduleOptions = scheduleOptions;
+            _client = clientFactory.CreateClient(IScheduleClient.HubName);
             _defaultJobExecutorType = typeof(IJobExecutor<>);
-
-            var clientOptions = scheduleOptions.Value.SignalRClientOptions;
-            _connection = new HubConnectionBuilder()
-                .WithUrl($"{clientOptions.Host}/schedule")
-                .WithAutomaticReconnect()
-                .Build();
-            _connection.HandshakeTimeout = clientOptions.HandShakeTimeout;
-            _connection.KeepAliveInterval = clientOptions.KeepAliveInterval;
-            _connection.ServerTimeout = clientOptions.ServerTimeout;
+            
         }
+
+        public HubConnection Connection => _client.Connection;
 
         public virtual async Task StartAsync(CancellationToken token = default)
         {
@@ -53,39 +48,39 @@ namespace Infrastructure.Schedule.Clients
             {
                 _hubHandlerRegistries = RegisterJobExecutor(jobOptions);
             }
-            if (_connection.State == HubConnectionState.Disconnected)
+            if (Connection.State == HubConnectionState.Disconnected)
             {
-                await _connection.StartAsync(token);
+                await Connection.StartAsync(token);
                 _logger.LogInformation("连接成功");
             }
         }
 
         public virtual async Task StopAsync(CancellationToken token = default)
         {
-            if (_connection.State != HubConnectionState.Disconnected)
+            if (Connection.State != HubConnectionState.Disconnected)
             {
-                await _connection.StopAsync(token);
+                await Connection.StopAsync(token);
                 _logger.LogInformation("断开连接");
             }
         }
         
         public virtual async Task CreateJobAsync(JobInfo jobInfo, CancellationToken token = default)
         {
-            if (_connection.State == HubConnectionState.Disconnected)
+            if (Connection.State == HubConnectionState.Disconnected)
             {
-                await _connection.StartAsync(token);
+                await Connection.StartAsync(token);
                 _logger.LogInformation("连接成功");
             }
             
-            await _connection.SendAsync(nameof(CreateJobAsync), jobInfo, token);
+            await Connection.SendAsync(nameof(CreateJobAsync), jobInfo, token);
             _logger.LogInformation("创建任务成功");
         }
 
         public async Task ReturnResultAsync(JobExecuteResult jobResult, CancellationToken token)
         {
-            if (_connection.State == HubConnectionState.Connected)
+            if (Connection.State == HubConnectionState.Connected)
             {
-                await _connection.SendAsync(nameof(ReturnResultAsync), jobResult, token);
+                await Connection.SendAsync(nameof(ReturnResultAsync), jobResult, token);
                 _logger.LogInformation("任务结果回传");
             }
             
@@ -96,12 +91,17 @@ namespace Infrastructure.Schedule.Clients
         {
             var jobExecutorType = _defaultJobExecutorType.MakeGenericType(jobOptions.ExecutorType);
             var jobExecutor = (IJobExecutor) _services.GetRequiredService(jobExecutorType);
-            return _connection.On(jobOptions.JobInfo.MethodName, jobExecutor.ExecuteJobAsync);
+            return Connection.On(jobOptions.JobInfo.MethodName, jobExecutor.ExecuteJobAsync);
         }
 
         public void Dispose()
         {
             _hubHandlerRegistries?.Dispose();
+        }
+
+        public ValueTask DisposeAsync()
+        {
+            return _client.DisposeAsync();
         }
     }
 }

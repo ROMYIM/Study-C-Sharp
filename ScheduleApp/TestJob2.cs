@@ -6,9 +6,9 @@ public class TestJob2 : IJobExecutor
 {
     private readonly ILogger<TestJob2> _logger;
 
-    public TestJob2(ILogger<TestJob2> logger)
+    public TestJob2(ILoggerFactory loggerFactory)
     {
-        _logger = logger;
+        _logger = loggerFactory.CreateLogger<TestJob2>();
     }
 
     public Task ExecuteJobAsync()

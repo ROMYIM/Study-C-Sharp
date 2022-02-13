@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Infrastructure.Schedule;
+using Infrastructure.Schedule.Models;
 using Microsoft.AspNetCore.SignalR;
 using Quartz;
 using SchedulerService.Jobs;
@@ -22,6 +23,7 @@ public class SchedulerHub : Hub
 
     public async Task CreateJobAsync(JobInfo jobInfo)
     {
+        using var logScope = _logger.BeginScope(Context.ConnectionId);
         var scheduler = await _schedulerWorker.GetSchedulerAsync(SchedulerName);
         
         var jobKey = JobKey.Create(jobInfo.JobKey);
@@ -53,10 +55,18 @@ public class SchedulerHub : Hub
             _logger.LogInformation("调度策略:{}", jobInfo.CronExpression);
         }
     }
+    
+    public override Task OnConnectedAsync()
+    {
+        _logger.LogInformation(1, "Schedule Hub Connected: {}\nTime: {}", Context.ConnectionId, DateTime.Now);
+        return base.OnConnectedAsync();
+    }
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
+        using var logScope = _logger.BeginScope(Context.ConnectionId);
         _logger.LogInformation("连接[{}]断开", Context.ConnectionId);
+        _logger.LogCritical(-1, "Schedule Hub Disconnected: {}\nTime: {}", Context.ConnectionId, DateTime.Now);
         
         if (Context.Items.TryGetValue("JobKeys", out var keys))
         {

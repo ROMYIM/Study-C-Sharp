@@ -1,8 +1,9 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Infrastructure.Schedule.Options;
-using Microsoft.AspNetCore.SignalR.Client;
+using Infrastructure.Schedule.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -10,101 +11,60 @@ namespace Infrastructure.Schedule.Logging
 {
     public class ScheduleLoggerProvider : ILoggerProvider
     {
-        private readonly HubConnection _connection;
 
         private readonly ConcurrentDictionary<string, ScheduleLogger> _loggers;
 
-        private readonly Task _connectTask;
-
-        private readonly BlockingCollection<string> _logs;
+        private readonly BlockingCollection<LogInfo> _logs;
 
         private readonly IOptions<LoggerFilterOptions> _filterOptions;
 
         private ulong _isEnabled;
 
-        public ScheduleLoggerProvider(IOptions<ScheduleOptions> scheduleOptions, IOptions<LoggerFilterOptions> filterOptions)
+        public ScheduleLoggerProvider(IOptions<LoggerFilterOptions> filterOptions)
         {
             _filterOptions = filterOptions;
             _loggers = new ConcurrentDictionary<string, ScheduleLogger>();
-            _logs = new BlockingCollection<string>(1024);
-            
-            var clientOptions = scheduleOptions.Value.SignalRClientOptions;
-            _connection = new HubConnectionBuilder()
-                .WithUrl($"{clientOptions.Host}/logs")
-                .WithAutomaticReconnect()
-                .Build();
-            _connection.HandshakeTimeout = clientOptions.HandShakeTimeout;
-            _connection.KeepAliveInterval = clientOptions.KeepAliveInterval;
-            _connection.ServerTimeout = clientOptions.ServerTimeout;
-
-            _connection.On(nameof(StartLoggingAsync), StartLoggingAsync);
-            _connection.On(nameof(StopLoggingAsync), StopLoggingAsync);
-            
-            _connectTask = _connection.StartAsync();
-            _connectTask.Start();
-
-            PostLogsAsync();
+            _logs = new BlockingCollection<LogInfo>(1024);
         }
 
         public void Dispose()
         {
-            if (_connection == null) return;
-            
-            if (_connection.State == HubConnectionState.Connected)
-                _connection.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-                
-            _connection.DisposeAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            _loggers.Clear();
+            _logs.Dispose();
         }
 
         public ILogger CreateLogger(string categoryName)
         {
-            if (_loggers.TryGetValue(categoryName, out var logger))
-                return logger;
-            logger = new ScheduleLogger(this, categoryName, _filterOptions.Value);
-            return _loggers.GetOrAdd(categoryName, logger);
+            return _loggers.GetOrAdd(categoryName, name => new ScheduleLogger(this, name, _filterOptions.Value));
         }
 
-        public bool IsEnabled
+        public bool IsEnabled => _isEnabled > 0;
+
+        internal bool PushLogInfo<TScope>(LogInfo<TScope> logInfo)
         {
-            get
+            return logInfo != null && _logs.TryAdd(logInfo);
+        }
+
+        internal IEnumerable<LogInfo> TakeLogInfos(TimeSpan timeout)
+        {
+            while (_logs.TryTake(out var logInfo, timeout))
             {
-                if (_connectTask.IsCompletedSuccessfully)
-                {
-                    // _connectTask.ConfigureAwait(false).GetAwaiter().GetResult();
-                    return _isEnabled > 0;
-                }
-                return false;
+                yield return logInfo;
             }
         }
 
-        internal bool PushLogInfo(string logInfo)
-        {
-            return !string.IsNullOrWhiteSpace(logInfo) && _logs.TryAdd(logInfo);
-        }
-
-        private Task StartLoggingAsync()
+        internal Task StartLoggingAsync()
         {
             Interlocked.Exchange(ref _isEnabled, 1);
+            Console.WriteLine(nameof(StartLoggingAsync));
             return Task.CompletedTask;
         }
 
-        private Task StopLoggingAsync()
+        internal Task StopLoggingAsync()
         {
             Interlocked.Exchange(ref _isEnabled, 0);
+            Console.WriteLine(nameof(StopLoggingAsync));
             return Task.CompletedTask;
-        }
-
-        private Task PostLogsAsync()
-        {
-            return Task.Factory.StartNew(async loggerProvider =>
-            {
-                var scheduleLoggerProvider = (ScheduleLoggerProvider) loggerProvider;
-                while (scheduleLoggerProvider.IsEnabled && scheduleLoggerProvider._logs.TryTake(out var logContent))
-                {
-
-                    await _connection.SendAsync(nameof(PostLogsAsync), logContent);
-                }
-            },  this, TaskCreationOptions.LongRunning);
         }
     }
 }

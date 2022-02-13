@@ -1,4 +1,5 @@
 ﻿using System;
+using Infrastructure.Schedule.Models;
 
 namespace Infrastructure.Schedule.Options
 {

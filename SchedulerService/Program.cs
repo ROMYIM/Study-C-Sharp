@@ -6,7 +6,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddSingleton<SchedulerWorker>();
-        services.AddHostedService<SchedulerWorker>(s => s.GetRequiredService<SchedulerWorker>());
+        services.AddHostedService(s => s.GetRequiredService<SchedulerWorker>());
         services.AddQuartz(configurator =>
         {
             configurator.SchedulerName = SchedulerHub.SchedulerName;
@@ -20,17 +20,25 @@ IHost host = Host.CreateDefaultBuilder(args)
             options.HandshakeTimeout = TimeSpan.FromSeconds(10);
             options.EnableDetailedErrors = true;
         });
+        
     })
     .ConfigureWebHostDefaults(builder =>
     {
+        builder.ConfigureServices(services => services.AddControllers());
+        
         builder.Configure(app =>
         {
             app.UseRouting();
-            app.UseEndpoints(endpoints => endpoints.MapHub<SchedulerHub>("schedule"));
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHub<SchedulerHub>("Schedule");
+                endpoints.MapHub<LoggingHub>("Logging");
+            });
         });
 
         builder.UseUrls("http://*:5020");
     })
     .Build();
 
-await host.RunAsync();
+host.Run();

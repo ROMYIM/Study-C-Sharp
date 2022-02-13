@@ -4,10 +4,13 @@ using Infrastructure.Schedule.BackgroundServices;
 using Infrastructure.Schedule.Builders.DependencyInjection;
 using Infrastructure.Schedule.Clients;
 using Infrastructure.Schedule.JobExecutors;
+using Infrastructure.Schedule.Logging;
+using Infrastructure.Schedule.Models;
 using Infrastructure.Schedule.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Schedule.Extensions
@@ -92,18 +95,33 @@ namespace Infrastructure.Schedule.Extensions
         /// 添加<see cref="SignalRScheduleWorker"/>的依赖注入。
         /// </summary>
         /// <param name="services">服务集合</param>
-        /// <param name="configureScheduleOptions">调度基础组件的选项配置</param>
+        /// <param name="configureClientOptions">调度基础组件的选项配置</param>
         /// <returns>调度服务构建者</returns>
         /// <exception cref="ArgumentNullException">调度基础组件的选项配置委托为空</exception>
-        public static ScheduleServiceBuilder AddSchedule(this IServiceCollection services, Action<ScheduleOptions> configureScheduleOptions)
+        public static ScheduleServiceBuilder AddSchedule(this IServiceCollection services, Action<SignalRClientOptions> configureClientOptions)
         {
-            if (configureScheduleOptions == null) throw new ArgumentNullException(nameof(configureScheduleOptions));
-            var scheduleOptionsBuilder = services.AddOptions<ScheduleOptions>().Configure(configureScheduleOptions);
+            if (configureClientOptions == null) throw new ArgumentNullException(nameof(configureClientOptions));
+            services.AddOptions<SignalRClientOptions>().Configure(configureClientOptions);
+            var scheduleOptionsBuilder = services.AddOptions<ScheduleOptions>().Configure(options => configureClientOptions(options.SignalRClientOptions));
             var jobInfoOptionsBuilder = services.AddOptions<JobInfo>();
+            services.TryAddSingleton<SignalRClientFactory>();
             services.TryAddSingleton<IScheduleClient, SignalRScheduleClient>();
             services.TryAddSingleton<SignalRScheduleWorker>();
             services.AddHostedService(s => s.GetRequiredService<SignalRScheduleWorker>());
             return new ScheduleServiceBuilder(services, scheduleOptionsBuilder, jobInfoOptionsBuilder);
+        }
+
+        public static ILoggingBuilder AddSchedule(this ILoggingBuilder loggingBuilder, Action<SignalRClientOptions> configureClientOptions)
+        {
+            var services = loggingBuilder.Services;
+            services.AddOptions<SignalRClientOptions>().Configure(configureClientOptions);
+            services.TryAddSingleton<SignalRClientFactory>();
+            services.AddSingleton<ILoggingClient, SignalRLoggingClient>();
+            services.TryAddSingleton<ScheduleLoggerProvider>();
+            services.AddSingleton<ILoggerProvider, ScheduleLoggerProvider>(s => s.GetService<ScheduleLoggerProvider>());
+            services.TryAddSingleton<SignalRLoggingWorker>();
+            services.AddHostedService(s => s.GetService<SignalRLoggingWorker>());
+            return loggingBuilder;
         }
     }
 }
