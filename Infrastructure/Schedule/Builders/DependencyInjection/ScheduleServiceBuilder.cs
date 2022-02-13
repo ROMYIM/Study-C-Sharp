@@ -10,14 +10,11 @@ namespace Infrastructure.Schedule.Builders.DependencyInjection
         public IServiceCollection Services { get; }
 
         public OptionsBuilder<ScheduleOptions> ScheduleOptionsBuilder { get; }
-        
-        public OptionsBuilder<JobInfo> JobInfoOptionsBuilder { get; }
 
-        public ScheduleServiceBuilder(IServiceCollection services, OptionsBuilder<ScheduleOptions> scheduleOptionsBuilder, OptionsBuilder<JobInfo> jobInfoOptionsBuilder)
+        public ScheduleServiceBuilder(IServiceCollection services, OptionsBuilder<ScheduleOptions> scheduleOptionsBuilder)
         {
             Services = services;
             ScheduleOptionsBuilder = scheduleOptionsBuilder;
-            JobInfoOptionsBuilder = jobInfoOptionsBuilder;
         }
     }
 }

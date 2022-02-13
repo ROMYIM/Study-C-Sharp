@@ -102,17 +102,25 @@ namespace Infrastructure.Schedule.Extensions
         {
             if (configureClientOptions == null) throw new ArgumentNullException(nameof(configureClientOptions));
             services.AddOptions<SignalRClientOptions>().Configure(configureClientOptions);
-            var scheduleOptionsBuilder = services.AddOptions<ScheduleOptions>().Configure(options => configureClientOptions(options.SignalRClientOptions));
-            var jobInfoOptionsBuilder = services.AddOptions<JobInfo>();
             services.TryAddSingleton<SignalRClientFactory>();
+            
+            var scheduleOptionsBuilder = services.AddOptions<ScheduleOptions>().Configure(options => configureClientOptions(options.SignalRClientOptions));
             services.TryAddSingleton<IScheduleClient, SignalRScheduleClient>();
             services.TryAddSingleton<SignalRScheduleWorker>();
             services.AddHostedService(s => s.GetRequiredService<SignalRScheduleWorker>());
-            return new ScheduleServiceBuilder(services, scheduleOptionsBuilder, jobInfoOptionsBuilder);
+            return new ScheduleServiceBuilder(services, scheduleOptionsBuilder);
         }
 
+        /// <summary>
+        /// 添加实时日志组件
+        /// </summary>
+        /// <param name="loggingBuilder">日志组件构建者</param>
+        /// <param name="configureClientOptions">服务端的连接参数配置</param>
+        /// <returns>日志构建者</returns>
+        /// <exception cref="ArgumentNullException">服务端的连接参数配置委托</exception>
         public static ILoggingBuilder AddSchedule(this ILoggingBuilder loggingBuilder, Action<SignalRClientOptions> configureClientOptions)
         {
+            if (configureClientOptions == null) throw new ArgumentNullException(nameof(configureClientOptions));
             var services = loggingBuilder.Services;
             services.AddOptions<SignalRClientOptions>().Configure(configureClientOptions);
             services.TryAddSingleton<SignalRClientFactory>();
