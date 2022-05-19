@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Infrastructure.Models;
 using Infrastructure.Schedule.Clients;
+using Infrastructure.Schedule.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Schedule.JobExecutors

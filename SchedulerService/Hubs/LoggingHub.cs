@@ -17,9 +17,7 @@ public class LoggingHub : Hub
     {
         foreach (var logInfo in logs)
         {
-            // ReSharper disable TemplateIsNotCompileTimeConstantProblem
-            _logger.LogInformation(logInfo.ToString());
-            // ReSharper restore TemplateIsNotCompileTimeConstantProblem
+            Console.WriteLine(logInfo.ToString());
         }
         return Task.CompletedTask;
     }

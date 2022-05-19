@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace Infrastructure.Models
+namespace Infrastructure.Schedule.Models
 {
     public class JobExecuteResult
     {

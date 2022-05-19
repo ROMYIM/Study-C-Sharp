@@ -1,5 +1,4 @@
 ﻿using System;
-using Infrastructure.Models;
 using Infrastructure.Schedule.BackgroundServices;
 using Infrastructure.Schedule.Builders.DependencyInjection;
 using Infrastructure.Schedule.Clients;

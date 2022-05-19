@@ -24,7 +24,7 @@ namespace Infrastructure.Extensions
                         var value = element.Value;
 
                         IEnumerable<KeyValuePair<string, string>> childrenData;
-                        StringBuilder keyBuilder = new StringBuilder();
+                        StringBuilder keyBuilder;
 
                         switch (value.ValueKind)
                         {

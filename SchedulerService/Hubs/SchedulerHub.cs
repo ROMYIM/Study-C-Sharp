@@ -25,7 +25,7 @@ public class SchedulerHub : Hub
     {
         using var logScope = _logger.BeginScope(Context.ConnectionId);
         var scheduler = await _schedulerWorker.GetSchedulerAsync(SchedulerName);
-        
+
         var jobKey = JobKey.Create(jobInfo.JobKey);
         var jobDetail = await scheduler.GetJobDetail(jobKey);
         if (jobDetail == null)
@@ -51,8 +51,8 @@ public class SchedulerHub : Hub
                 jobKeys.Add(jobKey);
                 Context.Items["JobKeys"] = jobKeys;
             }
-            _logger.LogInformation("创建任务[{}]成功", jobKey);
-            _logger.LogInformation("调度策略:{}", jobInfo.CronExpression);
+            _logger.LogInformation(1, "创建任务[{}]成功", jobKey);
+            _logger.LogInformation(1, "调度策略:{}", jobInfo.CronExpression);
         }
     }
     
@@ -65,7 +65,6 @@ public class SchedulerHub : Hub
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         using var logScope = _logger.BeginScope(Context.ConnectionId);
-        _logger.LogInformation("连接[{}]断开", Context.ConnectionId);
         _logger.LogCritical(-1, "Schedule Hub Disconnected: {}\nTime: {}", Context.ConnectionId, DateTime.Now);
         
         if (Context.Items.TryGetValue("JobKeys", out var keys))

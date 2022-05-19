@@ -41,7 +41,7 @@ namespace Infrastructure.Schedule.Logging
             if (!IsEnabled(logLevel)) return;
 
             if (state == null) throw new ArgumentNullException(nameof(state));
-            if (formatter == null) throw new ArgumentNullException(nameof(formatter));
+            formatter = FormatMessage;
 
             var logContent = FormatLogContent(state, exception);
 
@@ -89,6 +89,23 @@ namespace Infrastructure.Schedule.Logging
             }
 
             return contentBuilder.ToString();
+        }
+
+        private string FormatMessage<TState>(TState state, Exception? exception)
+        {
+            if (state == null) throw new ArgumentNullException(nameof(state));
+
+            var formattedMessageBuilder = new StringBuilder();
+            formattedMessageBuilder.AppendLine(state.ToString());
+
+            if (exception != null)
+            {
+                formattedMessageBuilder.Append("error: ").AppendLine(exception.Message);
+                formattedMessageBuilder.Append("source: ").AppendLine(exception.Source);
+                formattedMessageBuilder.Append("stack trace: ").AppendLine(exception.StackTrace);
+            }
+
+            return formattedMessageBuilder.ToString();;
         }
     }
 }

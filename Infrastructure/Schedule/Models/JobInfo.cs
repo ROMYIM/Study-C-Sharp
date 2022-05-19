@@ -15,18 +15,6 @@ namespace Infrastructure.Schedule.Models
         public virtual string MethodName { get; set; }
 
         public virtual string Description { get; set; }
-
-        public virtual JobInfo New(JobInfo jobInfo)
-        {
-            if (jobInfo == null) throw new ArgumentNullException(nameof(jobInfo));
-            
-            JobKey = jobInfo.JobKey;
-            CronExpression = jobInfo.CronExpression;
-            MethodName = jobInfo.MethodName;
-            Description = jobInfo.Description;
-
-            return this;
-        }
     }
 
     public class JobInfo<T> : JobInfo where T : IJobExecutor

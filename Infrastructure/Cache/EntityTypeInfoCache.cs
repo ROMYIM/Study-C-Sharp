@@ -12,7 +12,7 @@ namespace Infrastructure.Cache
     /// 泛型缓存。缓存实体类型的构造函数委托和属性设置为托
     /// </summary>
     /// <typeparam name="T">实体的类型参数。该实体必须是引用类型，且有无参构造函数</typeparam>
-    public static class EntityTypeInfoCache<T> where T : class
+    public class EntityTypeInfoCache<T> where T : class
     {
         private static readonly Type EntityType = typeof(T);
 

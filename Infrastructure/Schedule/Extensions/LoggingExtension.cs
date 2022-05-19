@@ -7,23 +7,16 @@ namespace Infrastructure.Schedule.Extensions
     {
         public static string GetLogLevelString(this LogLevel logLevel)
         {
-            switch (logLevel)
+            return logLevel switch
             {
-                case LogLevel.Trace:
-                    return "trce";
-                case LogLevel.Debug:
-                    return "dbug";
-                case LogLevel.Information:
-                    return "info";
-                case LogLevel.Warning:
-                    return "warn";
-                case LogLevel.Error:
-                    return "fail";
-                case LogLevel.Critical:
-                    return "crit";
-                default:
-                    throw new ArgumentOutOfRangeException(nameof (logLevel));
-            }
+                LogLevel.Trace => "trce",
+                LogLevel.Debug => "dbug",
+                LogLevel.Information => "info",
+                LogLevel.Warning => "warn",
+                LogLevel.Error => "fail",
+                LogLevel.Critical => "crit",
+                _ => throw new ArgumentOutOfRangeException(nameof(logLevel))
+            };
         }
     }
 }

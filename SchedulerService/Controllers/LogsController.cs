@@ -5,7 +5,7 @@ using SchedulerService.Hubs;
 namespace SchedulerService.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class LogsController : ControllerBase
 {
     private readonly IHubContext<LoggingHub> _hubContext;

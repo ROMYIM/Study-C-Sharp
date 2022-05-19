@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Infrastructure.Models;
 using Infrastructure.Schedule.JobExecutors;
 using Infrastructure.Schedule.Models;
 using Infrastructure.Schedule.Options;
@@ -29,7 +28,8 @@ namespace Infrastructure.Schedule.Clients
         public SignalRScheduleClient(
             ILoggerFactory loggerFactory, 
             IServiceProvider services,
-            IOptions<ScheduleOptions> scheduleOptions, SignalRClientFactory clientFactory)
+            IOptions<ScheduleOptions> scheduleOptions, 
+            SignalRClientFactory clientFactory)
         {
             _logger = loggerFactory.CreateLogger(GetType());
             _services = services;
@@ -87,20 +87,16 @@ namespace Infrastructure.Schedule.Clients
             _logger.LogCritical("连接断开。无法回传结果");
         }
 
-        public virtual IDisposable RegisterJobExecutor(JobOptions jobOptions)
+        protected virtual IDisposable RegisterJobExecutor(JobOptions jobOptions)
         {
             var jobExecutorType = _defaultJobExecutorType.MakeGenericType(jobOptions.ExecutorType);
             var jobExecutor = (IJobExecutor) _services.GetRequiredService(jobExecutorType);
             return Connection.On(jobOptions.JobInfo.MethodName, jobExecutor.ExecuteJobAsync);
         }
 
-        public void Dispose()
-        {
-            _hubHandlerRegistries?.Dispose();
-        }
-
         public ValueTask DisposeAsync()
         {
+            _hubHandlerRegistries?.Dispose();
             return _client.DisposeAsync();
         }
     }
