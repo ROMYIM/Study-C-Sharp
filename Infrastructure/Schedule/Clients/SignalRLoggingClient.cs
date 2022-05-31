@@ -35,10 +35,10 @@ namespace Infrastructure.Schedule.Clients
                 await _client.StopAsync(cancellationToken);
         }
 
-        public async Task PostLogsAsync(params LogInfo[] logs)
+        public async Task PostLogsAsync(CancellationToken token = default, params LogInfo[] logs)
         {
             if (Connection.State == HubConnectionState.Connected)
-                await Connection.SendAsync(nameof(PostLogsAsync), logs);
+                await Connection.SendAsync(nameof(PostLogsAsync), logs, token);
         }
 
         public ValueTask DisposeAsync()

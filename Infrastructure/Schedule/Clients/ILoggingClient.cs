@@ -9,6 +9,6 @@ namespace Infrastructure.Schedule.Clients
     {
         const string HubName = "Logging";
         
-        Task PostLogsAsync(params LogInfo[] logs);
+        Task PostLogsAsync(CancellationToken token = default, params LogInfo[] logs);
     }
 }

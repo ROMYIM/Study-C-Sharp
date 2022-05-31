@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Infrastructure.Schedule.Clients;
 using Infrastructure.Schedule.Logging;
@@ -28,10 +26,10 @@ namespace Infrastructure.Schedule.BackgroundServices
                 {
                     while (true)
                     {
-                        while (loggerProvider.IsEnabled)
+                        if (!loggerProvider.IsEnabled) continue;
+                        await foreach (var logInfo in _loggerProvider.TakeLogInfosAsync().WithCancellation(stoppingToken))
                         {
-                            var logs = loggerProvider.TakeLogInfos(TimeSpan.FromSeconds(3));
-                            await _client.PostLogsAsync(logs.ToArray());
+                            await _client.PostLogsAsync(stoppingToken, logInfo);
                         }
                     }
                 }

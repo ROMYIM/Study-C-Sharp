@@ -11,11 +11,19 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            Task.Run(async () =>
-            {
-                await ChannelRun(5000,0, 2, 50, 5);
-            }); 
-            Console.WriteLine("运行开始..."); 
+            var cts = new CancellationTokenSource();
+            var token = cts.Token;
+            // Task.Run(async () =>
+            // {
+            //     await ChannelRun(5000,0, 2, 50, 5);
+            // }, cts.Token); 
+            Console.WriteLine("运行开始...");
+            Console.WriteLine(token.IsCancellationRequested);
+            cts.Cancel();
+            Console.WriteLine(token.IsCancellationRequested);
+            cts.TryReset();
+            Console.WriteLine(token.IsCancellationRequested);
+            Console.WriteLine("运行结束..."); 
             Console.ReadLine();
         } 
         

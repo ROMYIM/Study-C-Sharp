@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Infrastructure.Schedule.Models;
 using Microsoft.Extensions.Logging;
@@ -14,7 +15,7 @@ namespace Infrastructure.Schedule.Logging
 
         private readonly ConcurrentDictionary<string, ScheduleLogger> _loggers;
 
-        private readonly BlockingCollection<LogInfo> _logs;
+        private readonly Channel<LogInfo> _logInfoChannel;
 
         private readonly IOptions<LoggerFilterOptions> _filterOptions;
 
@@ -24,13 +25,14 @@ namespace Infrastructure.Schedule.Logging
         {
             _filterOptions = filterOptions;
             _loggers = new ConcurrentDictionary<string, ScheduleLogger>();
-            _logs = new BlockingCollection<LogInfo>(1024);
+            _logInfoChannel = Channel.CreateBounded<LogInfo>(1024);
         }
 
         public void Dispose()
         {
             _loggers.Clear();
-            _logs.Dispose();
+            _logInfoChannel.Writer.TryComplete();
+            _logInfoChannel.Reader.Completion.Wait();
         }
 
         public ILogger CreateLogger(string categoryName)
@@ -42,15 +44,17 @@ namespace Infrastructure.Schedule.Logging
 
         internal bool PushLogInfo<TScope>(LogInfo<TScope> logInfo)
         {
-            return logInfo != null && _logs.TryAdd(logInfo);
+            return logInfo != null && _logInfoChannel.Writer.TryWrite(logInfo);
         }
 
-        internal IEnumerable<LogInfo> TakeLogInfos(TimeSpan timeout)
+        internal IAsyncEnumerable<LogInfo> TakeLogInfosAsync()
         {
-            while (_logs.TryTake(out var logInfo, timeout))
-            {
-                yield return logInfo;
-            }
+            return _logInfoChannel.Reader.ReadAllAsync();
+
+            // while (_logInfoChannel.Reader.TryRead(out var logInfo))
+            // {
+            //     yield return logInfo;
+            // }
         }
 
         internal Task StartLoggingAsync()
