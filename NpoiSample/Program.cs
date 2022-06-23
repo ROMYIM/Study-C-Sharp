@@ -7,7 +7,7 @@ using NpoiSample.Models;
 
 const string sheetName = "Sheet1";
 const string filePath = "客户导出模板-销管用-20220526113251.xlsx";
-const string connectionString = "data source=139.9.61.133,8433;initial catalog=acip_iplatform;user id=rdsReader;password=rds@Reader!6;Encrypt=True;TrustServerCertificate=True;packet size=4096;MultipleActiveResultSets=true";
+const string connectionString = "";
 const int step = 100;
 // const int totalCount = 10;
 const int totalCount = 34179;
