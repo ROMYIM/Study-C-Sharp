@@ -7,7 +7,7 @@ using NpoiSample.Models;
 
 const string sheetName = "Sheet1";
 const string filePath = "客户导出模板-销管用-20220526113251.xlsx";
-const string connectionString = "";
+const string connectionString = "data source=139.9.61.133,8433;initial catalog=acip_iplatform;user id=rdsReader;password=rds@Reader!6;Encrypt=True;TrustServerCertificate=True;packet size=4096;MultipleActiveResultSets=true";
 const int step = 100;
 // const int totalCount = 10;
 const int totalCount = 34179;
@@ -37,25 +37,67 @@ for (var i = 3; i < totalCount + 3; i++)
 
     if (string.IsNullOrWhiteSpace(customerFullName))
     {
-        var customers = await freeSql.Select<CusCustomer>().WithLock()
-            .From<SysUserInfo, SysUserInfo, BasCountry, BasCompany, BasCustomerFrom, BasDistrict>(
-                (customerInfo, clueUser, businessUser, basCountry, basCompany, customerFrom, basDistrict) =>
-                    customerInfo.LeftJoin(customer => clueUser.UserId == customer.ClueUserId)
-                        .LeftJoin(customer => businessUser.UserId == customer.BusiUserId)
-                        .LeftJoin(customer => basCountry.CountryId == customer.CountryId)
-                        .LeftJoin(customer => basCompany.CompanyId == customer.ManageCompany)
-                        .LeftJoin(customer => customerFrom.FromId == customer.CustomerFrom)
-                        .LeftJoin(customer => basDistrict.DistrictCode == customer.District))
-            .Where((customer, clueUser, businessUser, basCountry, basCompany, customerFrom, basDistrict) =>
-                customer.CustomerId == customerId)
-            .ToListAsync((customer, clueUser, businessUser, basCountry, basCompany, customerFrom, basDistrict) =>
-                new CustomerFollowUserInfoDto()
+        // var customers = await freeSql.Select<CusCustomer>().WithLock()
+        //     .From<SysUserInfo, SysUserInfo, BasCountry, BasCompany, BasCustomerFrom, BasDistrict>(
+        //         (customerInfo, clueUser, businessUser, basCountry, basCompany, customerFrom, basDistrict) =>
+        //             customerInfo.LeftJoin(customer => clueUser.UserId == customer.ClueUserId)
+        //                 .LeftJoin(customer => businessUser.UserId == customer.BusiUserId)
+        //                 .LeftJoin(customer => basCountry.CountryId == customer.CountryId)
+        //                 .LeftJoin(customer => basCompany.CompanyId == customer.ManageCompany)
+        //                 .LeftJoin(customer => customerFrom.FromId == customer.CustomerFrom)
+        //                 .LeftJoin(customer => basDistrict.DistrictCode == customer.District))
+        //     .Where((customer, clueUser, businessUser, basCountry, basCompany, customerFrom, basDistrict) =>
+        //         customer.CustomerId == customerId)
+        //     .ToListAsync((customer, clueUser, businessUser, basCountry, basCompany, customerFrom, basDistrict) =>
+        //         new CustomerFollowUserInfoDto()
+        //         {
+        //             CustomerId = customer.CustomerId,
+        //             AddressCity = customer.AddrCity,
+        //             AddressDistrict = customer.AddrDistrict,
+        //             AddressProvince = customer.AddrProvince,
+        //             BusinessUser = businessUser.CnName,
+        //             ClueUser = clueUser.CnName,
+        //             Country = basCountry.CountryZhCn,
+        //             CreateTime = customer.CreateTime,
+        //             District = basDistrict.TextZhCn,
+        //             Industry = customer.Industry,
+        //             CustomerEnabled = customer.IsEnabled == true ? "是" : "否",
+        //             CustomerFrom = customerFrom.FromNameZhCn,
+        //             CustomerLevel = customer.TypeId,
+        //             IsCooperation = customer.IsCooperation,
+        //             ManageCompany = basCompany.ShortNameCn,
+        //             CustomerFullName = customer.CustomerFullName,
+        //         });
+        
+        var followUsers = await freeSql.Select<CusCustomer>().WithLock()
+        .From<CusFollowList, SysUserInfo, CustomerGrantUser, SysUserInfo, SysUserInfo, BasCountry, BasCompany,
+            BasCustomerFrom, BasDistrict>(
+            (customerInfo, customerFollow, userInfo, grantUser, clueUser, businessUser, basCountry, basCompany, customerFrom, basDistrict) =>
+                customerInfo.LeftJoin(customer => customerFollow.CustomerId == customer.CustomerId)
+                    .LeftJoin(customer => customerFollow.TrackUser == userInfo.UserId)
+                    .LeftJoin(customer => customerFollow.CustomerId == grantUser.CustomerId &&
+                                          customerFollow.TrackUser == grantUser.UserId)
+                    .LeftJoin(customer => clueUser.UserId == customer.ClueUserId)
+                    .LeftJoin(customer => businessUser.UserId == customer.BusiUserId)
+                    .LeftJoin(customer => basCountry.CountryId == customer.CountryId)
+                    .LeftJoin(customer => basCompany.CompanyId == customer.ManageCompany)
+                    .LeftJoin(customer => customerFrom.FromId == customer.CustomerFrom)
+                    .LeftJoin(customer => basDistrict.DistrictCode == customer.District))
+            .Where((customer, customerFollow, userInfo, grantUser, clueUser, businessUser, basCountry, basCompany,
+                    customerFrom, basDistrict) =>
+                customer.CustomerId == customerId).ToListAsync((customer,
+                customerFollow,
+                userInfo, grantUser, clueUser, businessUser, basCountry, basCompany,
+                customerFrom, basDistrict) => new CustomerFollowUserInfoDto()
                 {
-                    CustomerId = customer.CustomerId,
+                    CustomerId = customerFollow.CustomerId,
                     AddressCity = customer.AddrCity,
                     AddressDistrict = customer.AddrDistrict,
                     AddressProvince = customer.AddrProvince,
                     BusinessUser = businessUser.CnName,
+                    CaseDirection = customerFollow.CaseDirection ?? string.Empty,
+                    CaseSourceClass = customerFollow.HeadUserType,
+                    CaseType = customerFollow.CaseType ?? string.Empty,
                     ClueUser = clueUser.CnName,
                     Country = basCountry.CountryZhCn,
                     CreateTime = customer.CreateTime,
@@ -66,39 +108,43 @@ for (var i = 3; i < totalCount + 3; i++)
                     CustomerLevel = customer.TypeId,
                     IsCooperation = customer.IsCooperation,
                     ManageCompany = basCompany.ShortNameCn,
+                    UserName = userInfo.CnName,
                     CustomerFullName = customer.CustomerFullName,
+                    CustomerUserType = customerFollow.CustomerUserType,
+                    FollowerEnabled = customerFollow.IsEnabled,
+                    UserEnabled = userInfo.IsEnabled,
+                    GrantType = grantUser.GrantType
                 });
         
-        foreach (var dto in customers)
+        foreach (var dto in followUsers)
         {
-            row.SetValue(cellStyle, 0, dto.CustomerId);
+            // row.SetValue(cellStyle, 0, dto.CustomerId);
             row.SetValue(cellStyle, 1, dto.CustomerFullName);
             row.SetValue(cellStyle, 2, dto.CustomerEnabled);
-            // if (dto.CaseType == "P")
-            // {
-            //     dto.SetExcelFollowUserValue(row, cellStyle, 3);
-            // }
-            //
-            // else if (dto.CaseType == "T")
-            // {
-            //     dto.SetExcelFollowUserValue(row, cellStyle, 15);
-            // }
-            //
-            // else if (dto.CaseType == "X")
-            // {
-            //     dto.SetExcelFollowUserValue(row, cellStyle, 27);
-            // }
-            //
-            // else if (dto.CaseType == "C")
-            // {
-            //     dto.SetExcelFollowUserValue(row, cellStyle, 39);
-            // }
-            //
-            // else if (dto.CaseType == "L")
-            // {
-            //     dto.SetExcelFollowUserValue(row, cellStyle, 51);
-            // }
-        
+            if (dto.CaseType == "P")
+            {
+                dto.SetExcelFollowUserValue(row, cellStyle, 3);
+            }
+            
+            else if (dto.CaseType == "T")
+            {
+                dto.SetExcelFollowUserValue(row, cellStyle, 15);
+            }
+            
+            else if (dto.CaseType == "X")
+            {
+                dto.SetExcelFollowUserValue(row, cellStyle, 27);
+            }
+            
+            else if (dto.CaseType == "C")
+            {
+                dto.SetExcelFollowUserValue(row, cellStyle, 39);
+            }
+            
+            else if (dto.CaseType == "L")
+            {
+                dto.SetExcelFollowUserValue(row, cellStyle, 51);
+            }
             row.SetValue(cellStyle, 63, dto.District);
             row.SetValue(cellStyle, 64, dto.Country);
             row.SetValue(cellStyle, 65, dto.AddressProvince);
@@ -126,54 +172,8 @@ for (var i = 3; i < totalCount + 3; i++)
             executeCounter = 0;
         }
     }
-    
-    
-    // var followUsers = await freeSql.Select<CusFollowList>().WithLock()
-    //     .From<CusCustomer, SysUserInfo, CustomerGrantUser, SysUserInfo, SysUserInfo, BasCountry, BasCompany,
-    //         BasCustomerFrom, BasDistrict>(
-    //         (cusFollow, customer, userInfo, grantUser, clueUser, businessUser, basCountry, basCompany, customerFrom, basDistrict) =>
-    //             cusFollow.InnerJoin(customerFollow => customerFollow.CustomerId == customer.CustomerId)
-    //                 .InnerJoin(customerFollow => customerFollow.TrackUser == userInfo.UserId)
-    //                 .InnerJoin(customerFollow => customerFollow.CustomerId == grantUser.CustomerId &&
-    //                                              customerFollow.TrackUser == grantUser.UserId)
-    //                 .LeftJoin(customerFollow => clueUser.UserId == customer.ClueUserId)
-    //                 .LeftJoin(customerFollow => businessUser.UserId == customer.BusiUserId)
-    //                 .LeftJoin(customerFollow => basCountry.CountryId == customer.CountryId)
-    //                 .LeftJoin(customerFollow => basCompany.CompanyId == customer.ManageCompany)
-    //                 .LeftJoin(customerFollow => customerFrom.FromId == customer.CustomerFrom)
-    //                 .LeftJoin(customerFollow => basDistrict.DistrictCode == customer.District))
-    //         .Where((customerFollow, customer, userInfo, grantUser, clueUser, businessUser, basCountry, basCompany,
-    //                 customerFrom, basDistrict) =>
-    //             customerFollow.CustomerId == customerId).ToListAsync((customerFollow,
-    //             customer,
-    //             userInfo, grantUser, clueUser, businessUser, basCountry, basCompany,
-    //             customerFrom, basDistrict) => new CustomerFollowUserInfoDto()
-    //             {
-    //                 CustomerId = customerFollow.CustomerId,
-    //                 AddressCity = customer.AddrCity,
-    //                 AddressDistrict = customer.AddrDistrict,
-    //                 AddressProvince = customer.AddrProvince,
-    //                 BusinessUser = businessUser.CnName,
-    //                 CaseDirection = customerFollow.CaseDirection,
-    //                 CaseSourceClass = customerFollow.HeadUserType,
-    //                 CaseType = customerFollow.CaseType,
-    //                 ClueUser = clueUser.CnName,
-    //                 Country = basCountry.CountryZhCn,
-    //                 CreateTime = customer.CreateTime,
-    //                 District = basDistrict.TextZhCn,
-    //                 Industry = customer.Industry,
-    //                 CustomerEnabled = customer.IsEnabled == true ? "是" : "否",
-    //                 CustomerFrom = customerFrom.FromNameZhCn,
-    //                 CustomerLevel = customer.TypeId,
-    //                 IsCooperation = customer.IsCooperation,
-    //                 ManageCompany = basCompany.ShortNameCn,
-    //                 UserName = userInfo.CnName,
-    //                 CustomerFullName = customer.CustomerFullName,
-    //                 CustomerUserType = customerFollow.CustomerUserType
-    //     
-    //             });
-    
-    
+
+
 }
 await using var lastWrite = new FileStream(filePath, FileMode.Create, FileAccess.Write);
 workbook.Write(lastWrite);

@@ -89,12 +89,27 @@ public class CustomerFollowUserInfoDto
     /// </summary>
     public string? BusinessUser { get; set; }
 
+    /// <summary>
+    /// 人员是否有效
+    /// </summary>
+    public bool? FollowerEnabled { get; set; }
+
+    /// <summary>
+    /// 用户是否有效
+    /// </summary>
+    public bool? UserEnabled { get; set; }
+
     public DateTime? CreateTime { get; set; }
 
     /// <summary>
     /// 是否境外代理
     /// </summary>
     public bool? IsCooperation { get; set; }
+
+    /// <summary>
+    /// 授权类型  0表示创建人 1表示案源人 2表示跟案人 3表示授权人
+    /// </summary>
+    public string? GrantType { get; set; }
 
     // public string CaseSourceDistrict =>
     //     District switch

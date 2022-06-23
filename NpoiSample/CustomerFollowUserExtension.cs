@@ -10,13 +10,13 @@ public static class CustomerFollowUserExtension
         if (dto.CaseDirection == "II")
         {
             
-            if (string.Equals("ay", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals("ay", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase) && (dto.FollowerEnabled ?? false) && dto.GrantType == "1")
             {
                 row.SetValue(cellStyle, columnIndex, dto.GetCaseSourceClass);
                 row.SetValue(cellStyle, columnIndex + 1, dto.UserName);
             }
 
-            else if (string.Equals("ga", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals("ga", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase) && (dto.FollowerEnabled ?? false) && dto.GrantType == "2")
             {
                 row.SetValue(cellStyle, columnIndex + 2, dto.UserName);
             }
@@ -25,13 +25,13 @@ public static class CustomerFollowUserExtension
         else if (dto.CaseDirection == "IO")
         {
 
-            if (string.Equals("ay", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals("ay", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase) && (dto.FollowerEnabled ?? false) && dto.GrantType == "1")
             {
                 row.SetValue(cellStyle, columnIndex + 3, dto.GetCaseSourceClass);
                 row.SetValue(cellStyle, columnIndex + 4, dto.UserName);
             }
 
-            else if (string.Equals("ga", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals("ga", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase) && (dto.FollowerEnabled ?? false) && dto.GrantType == "2")
             {
                 row.SetValue(cellStyle, columnIndex + 5, dto.UserName);
             }
@@ -39,13 +39,13 @@ public static class CustomerFollowUserExtension
         
         else if (dto.CaseDirection == "OI")
         {
-            if (string.Equals("ay", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals("ay", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase) && (dto.FollowerEnabled ?? false) && dto.GrantType == "1")
             {
                 row.SetValue(cellStyle, columnIndex + 6, dto.GetCaseSourceClass);
                 row.SetValue(cellStyle, columnIndex + 7, dto.UserName);
             }
 
-            else if (string.Equals("ga", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals("ga", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase) && (dto.FollowerEnabled ?? false) && dto.GrantType == "2")
             {
                 row.SetValue(cellStyle, columnIndex + 8, dto.UserName);
             }
@@ -54,13 +54,13 @@ public static class CustomerFollowUserExtension
         else if (dto.CaseDirection == "OO")
         {
 
-            if (string.Equals("ay", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals("ay", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase) && (dto.FollowerEnabled ?? false) && dto.GrantType == "1")
             {
                 row.SetValue(cellStyle, columnIndex + 9, dto.GetCaseSourceClass);
                 row.SetValue(cellStyle, columnIndex + 10, dto.UserName);
             }
 
-            else if (string.Equals("ga", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals("ga", dto.CustomerUserType, StringComparison.OrdinalIgnoreCase) && (dto.FollowerEnabled ?? false) && dto.GrantType == "2")
             {
                 row.SetValue(cellStyle, columnIndex + 11, dto.UserName);
             }
