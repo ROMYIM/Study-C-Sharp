@@ -7,7 +7,7 @@ using NpoiSample.Models;
 
 const string sheetName = "Sheet3";
 const string filePath = "误处理无期限官文-44份-丘婷婷.xlsx";
-const string connectionString = "";
+const string connectionString = "data source=139.9.61.133,8433;initial catalog=acip_iplatform;user id=rdsacip;password=Acip@Sql.(15:14)#;Encrypt=True;TrustServerCertificate=True;packet size=4096;MultipleActiveResultSets=true";
 
 
 var freeSql = new FreeSqlBuilder().UseConnectionString(connectionString: connectionString, dataType: DataType.SqlServer)
