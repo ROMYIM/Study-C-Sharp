@@ -8,12 +8,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="FreeSql.DbContext" Version="3.2.665" />
       <PackageReference Include="FreeSql.Provider.SqlServer" Version="3.2.651" />
       <PackageReference Include="NPOI" Version="2.5.6" />
     </ItemGroup>
 
     <ItemGroup>
       <None Update="客户导出模板-销管用-20220526113251.xlsx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="误处理无期限官文-44份-丘婷婷.xlsx">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>

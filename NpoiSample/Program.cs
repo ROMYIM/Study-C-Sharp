@@ -5,8 +5,8 @@ using NPOI.XSSF.UserModel;
 using NpoiSample;
 using NpoiSample.Models;
 
-const string sheetName = "Sheet1";
-const string filePath = "客户导出模板-销管用-20220526113251.xlsx";
+const string sheetName = "Sheet3";
+const string filePath = "误处理无期限官文-44份-丘婷婷.xlsx";
 const string connectionString = "";
 
 
@@ -14,7 +14,8 @@ var freeSql = new FreeSqlBuilder().UseConnectionString(connectionString: connect
     .Build();
 freeSql.Aop.CurdBefore += (_, eventArgs) => Console.WriteLine(eventArgs.Sql);
 
-
+var importService = new ImportService(freeSql, filePath, sheetName);
+await importService.ImportAsync(44);
 
 
 

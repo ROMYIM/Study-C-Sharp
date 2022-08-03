@@ -37,7 +37,7 @@ IHost host = Host.CreateDefaultBuilder(args)
             services.AddStringBuilderPool();
             services.AddControllers(options =>
             {
-                options.Filters.Add<ActionResultFilter<TraceApiResult>>();
+                // options.Filters.Add<ActionResultFilter<TraceApiResult>>();
                 options.Filters.Add<ActionExceptionFilter<TraceApiResult>>();
             }).AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter()));
             services.AddHttpLogging(options =>
