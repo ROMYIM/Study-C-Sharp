@@ -1,4 +1,5 @@
 using FreeSqlSample.Extensions;
+using FreeSqlSample.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddFreeSql(builder.Configuration, applicationName: string.Empty, "Default", "Test");
+builder.Services.AddScoped<CaseInfoRepository>();
+builder.Services.AddScoped<ProcInfoRepository>();
 
 var app = builder.Build();
 
