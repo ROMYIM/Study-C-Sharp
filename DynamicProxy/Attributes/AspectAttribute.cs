@@ -10,18 +10,16 @@ namespace DynamicProxy.Attributes
     {
         private readonly Type[] _interceptorsTypes;
 
-        public IReadOnlyList<Type> InterceptorTypes => _interceptorsTypes;
+        public IEnumerable<Type> InterceptorTypes => _interceptorsTypes;
 
         public AspectAttribute(params Type[] interceptorTypes)
         {
-            if (interceptorTypes != null)
+            if (interceptorTypes == null) return;
+            _interceptorsTypes = new Type[interceptorTypes.Length];
+            for (var i = 0; i < interceptorTypes.Length; i++)
             {
-                _interceptorsTypes = new Type[interceptorTypes.Length];
-                for (int i = 0; i < interceptorTypes.Length; i++)
-                {
-                    if (interceptorTypes[i].GetTypeInfo().IsAssignableFrom(typeof(IInterceptor)))
-                        _interceptorsTypes[i] = interceptorTypes[i];
-                }
+                if (typeof(IInterceptor).IsAssignableFrom(interceptorTypes[i]))
+                    _interceptorsTypes[i] = interceptorTypes[i];
             }
         }
 

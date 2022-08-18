@@ -18,11 +18,11 @@ public class DispatchProxyBuilder<TInterface, TInstance> where TInstance : TInte
 
     private readonly TInstance _originalInstance;
 
-    public DispatchProxyBuilder(IServiceProvider serviceProvider, AspectBuilder aspectBuilder, AspectContextFactory aspectContextFactory)
+    public DispatchProxyBuilder(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
-        _aspectBuilder = aspectBuilder;
-        _aspectContextFactory = aspectContextFactory;
+        _aspectBuilder = new AspectBuilder(serviceProvider);
+        _aspectContextFactory = new AspectContextFactory(serviceProvider);
         _originalInstance = serviceProvider.GetService<TInstance>();
     }
 

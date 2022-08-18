@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Infrastructure.Converters;
+using Microsoft.IdentityModel.Tokens;
 using MiddleWareSample.MiddleWares;
 using MiddleWareSample.Extensions;
 
@@ -31,7 +33,7 @@ namespace MiddleWareSample
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddAuthentication(options => 
+            services.AddAuthentication(options =>
             {
                 options.DefaultScheme = "Bearer";
                 // options.DefaultChallengeScheme = "oidc";
@@ -40,9 +42,16 @@ namespace MiddleWareSample
             {
                 options.SaveToken = true;
                 options.Authority = "http://localhost:5000";
-                options.ClaimsIssuer = "IdentityServer"; 
+                options.ClaimsIssuer = "IdentityServer";
                 options.RequireHttpsMetadata = false;
 
+            }).AddJwtBearer("Jwt", options =>
+            {
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+
+                };
             });
             
             // .AddOpenIdConnect("oidc", options =>

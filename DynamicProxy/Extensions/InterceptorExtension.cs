@@ -8,7 +8,7 @@ namespace DynamicProxy.Extensions
         {
             ArgumentNullException.ThrowIfNull(builder);
             ArgumentNullException.ThrowIfNull(interceptorType);
-            if (!interceptorType.IsAssignableFrom(typeof(IInterceptor)))
+            if (!typeof(IInterceptor).IsAssignableFrom(interceptorType))
             {
                 throw new ArgumentException("the type is not assignable from 'IInterceptor'", nameof(interceptorType));
             }

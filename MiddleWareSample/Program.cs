@@ -25,7 +25,7 @@ namespace MiddleWareSample
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {        
-                    webBuilder.UseUrls("http://*:5027");         
+                        // webBuilder.UseUrls("http://*:5027");         
                     webBuilder.UseStartup<Startup>();
                 });
     }
