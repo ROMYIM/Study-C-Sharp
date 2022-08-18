@@ -4,6 +4,6 @@ namespace DynamicProxy
 {
     public interface IInterceptor
     {
-        Task InvokeAsync(AspectContext context);
+        Task InvokeAsync(AspectContext context, AspectDelegate next);
     }
 }

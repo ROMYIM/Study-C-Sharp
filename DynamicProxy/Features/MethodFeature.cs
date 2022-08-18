@@ -7,8 +7,6 @@ namespace DynamicProxy.Features
     {
         internal MethodInfo MethodInfo { get; set; }
 
-        internal MethodBuilder MethodBuilder { get; set; }
-        
         internal object?[]? Parameters { get; set; }
         
         internal object OriginalInstance { get; set; }

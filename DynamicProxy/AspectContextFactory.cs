@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using DynamicProxy.Features;
 
 namespace DynamicProxy
 {
-    internal class AspectContextFactory
+    public class AspectContextFactory
     {
         public IServiceProvider Services { get; }
         
-        internal AspectContextFactory(IServiceProvider serviceProvider)
+        public AspectContextFactory(IServiceProvider serviceProvider)
         {
             Services = serviceProvider;
         }
 
-        internal AspectContext Create([NotNull]MethodFeature features)
+        internal AspectContext Create(MethodInfo methodInfo, object instance)
         {
             
             var context = new AspectContext(Services)
             {
-                Method = features.MethodInfo,
-                Instance = features.OriginalInstance,
-                Parameters = features.Parameters
+                Method = methodInfo,
+                Instance = instance
             };
             return context;
         }

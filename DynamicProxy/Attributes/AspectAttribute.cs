@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace DynamicProxy.Attributes
 {
-    [System.AttributeUsage(System.AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-    public class AspectAttribute : System.Attribute
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+    public class AspectAttribute : Attribute
     {
         private readonly Type[] _interceptorsTypes;
 

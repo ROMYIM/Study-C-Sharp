@@ -22,7 +22,7 @@ namespace DynamicProxy
 
         public object Instance { get; internal set; }
 
-        internal AspectContext(IServiceProvider serviceProvider)
+        public AspectContext(IServiceProvider serviceProvider)
         {
             ApplicationServices = serviceProvider;
         }

@@ -4,12 +4,25 @@ namespace DynamicProxy.Extensions
 {
     public static class InterceptorExtension
     {
-        public static AspectBuilder AddInterceptor(this AspectBuilder builder, IInterceptor interceptor)
+        public static AspectBuilder AddInterceptor(this AspectBuilder builder, Type interceptorType)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (interceptor == null) throw new ArgumentNullException(nameof(interceptor));
+            ArgumentNullException.ThrowIfNull(builder);
+            ArgumentNullException.ThrowIfNull(interceptorType);
+            if (!interceptorType.IsAssignableFrom(typeof(IInterceptor)))
+            {
+                throw new ArgumentException("the type is not assignable from 'IInterceptor'", nameof(interceptorType));
+            }
 
-            return builder.AddAspect(next => interceptor.InvokeAsync);
+            return builder.AddAspect(next =>
+            {
+                return async context =>
+                {
+                    if (context.ApplicationServices.GetService(interceptorType) is IInterceptor interceptor)
+                    {
+                        await interceptor.InvokeAsync(context, next);
+                    }
+                };
+            });
         }
     }
 }

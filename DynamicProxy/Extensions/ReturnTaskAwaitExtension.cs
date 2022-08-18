@@ -5,9 +5,9 @@ namespace DynamicProxy.Extensions
 {
     public static class ReturnTaskAwaitExtension
     {
-        public static async ValueTask AwaitReturnAsync(this AspectContext context, object returnValue)
+        public static async ValueTask AwaitReturnAsync(this AspectContext context)
         {
-            switch (returnValue)
+            switch (context.ReturnValue)
             {
                 case null:
                     break;
@@ -18,10 +18,11 @@ namespace DynamicProxy.Extensions
                     await valueTask;
                     break;
                 default:
-                    var returnValueTypeInfo = returnValue.GetType().GetTypeInfo();
-                    if (returnValueTypeInfo.IsGenericType && returnValueTypeInfo.GetGenericTypeDefinition() == typeof(ValueTask<>))
+                    var returnValueTypeInfo = context.ReturnValue.GetType().GetTypeInfo();
+                    if (returnValueTypeInfo.IsGenericType 
+                        && (returnValueTypeInfo.GetGenericTypeDefinition() == typeof(ValueTask<>) || returnValueTypeInfo.GetGenericTypeDefinition() == typeof(Task<>)))
                     {
-                        await (dynamic)returnValue;
+                        await (dynamic)context.ReturnValue;
                     }
                     break;
             }

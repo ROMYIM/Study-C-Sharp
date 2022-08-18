@@ -4,13 +4,14 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
 using DynamicProxy.Attributes;
+using DynamicProxy.Extensions;
 
 namespace DynamicProxy
 {
     public class AspectBuilder
     {
 
-        private List<Func<AspectDelegate, AspectDelegate>> _aspects;
+        private readonly List<Func<AspectDelegate, AspectDelegate>> _aspects;
             
         public IReadOnlyList<Func<AspectDelegate, AspectDelegate>> Aspects => _aspects;
         
@@ -31,13 +32,13 @@ namespace DynamicProxy
 
         public AspectDelegate Build()
         {
-            AspectDelegate next = context =>
+            AspectDelegate next = async context =>
             {
                 context.ReturnValue = context.Method.Invoke(context.Instance, context.Parameters);
-                return Task.CompletedTask;
+                await context.AwaitReturnAsync();
             };
             
-            for (int i = Aspects.Count - 1; i >= 0; i--)
+            for (var i = Aspects.Count - 1; i >= 0; i--)
             {
                 next = Aspects[i](next);
             }
