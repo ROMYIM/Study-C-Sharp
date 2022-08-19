@@ -35,7 +35,7 @@ public class ServiceProxyBuilder : IProxyBuilder
         var dispatchProxyBuildType = GenerateProxyBuilderType(proxyServiceType, instanceType);
         Services.AddScoped(dispatchProxyBuildType);
 
-        Services.Add(instanceFactory is not null
+        Services.TryAdd(instanceFactory is not null
             ? ServiceDescriptor.Describe(instanceType, instanceFactory, lifetime)
             : ServiceDescriptor.Describe(instanceType, instanceType, lifetime));
 

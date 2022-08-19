@@ -3,6 +3,7 @@ using System.Reflection;
 using DynamicProxy.Attributes;
 using DynamicProxy.Options;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace DynamicProxy.Extensions;
 
@@ -35,7 +36,7 @@ public static class DependencyInjectionExtension
 
         configure?.Invoke(builder);
 
-        return builder;
+        return builder.AddInterceptors(serviceType, lifetime);
     }
 
     public static ServiceProxyBuilder ConfigureServiceProxy<TService, TInstance>(
@@ -54,14 +55,14 @@ public static class DependencyInjectionExtension
     public static ServiceProxyBuilder AddInterceptor(this ServiceProxyBuilder builder, Type interceptorType, ServiceLifetime interceptorLifeTime)
     {
         var services = builder.Services;
-        services.Add(ServiceDescriptor.Describe(interceptorType, interceptorType, interceptorLifeTime));
+        services.TryAdd(ServiceDescriptor.Describe(interceptorType, interceptorType, interceptorLifeTime));
         return builder;
     }
 
-    public static ServiceProxyBuilder AddInterceptors<TInterface>(this ServiceProxyBuilder builder,
+    public static ServiceProxyBuilder AddInterceptors(this ServiceProxyBuilder builder, Type serviceType,
         ServiceLifetime lifetime = ServiceLifetime.Transient)
     {
-        var methods = typeof(TInterface).GetMethods(BindingFlags.Instance | BindingFlags.Public);
+        var methods = serviceType.GetMethods(BindingFlags.Instance | BindingFlags.Public);
         foreach (var method in methods)
         {
             var aspect = method.GetCustomAttribute<AspectAttribute>();
