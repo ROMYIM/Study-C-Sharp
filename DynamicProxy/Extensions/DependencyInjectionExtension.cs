@@ -12,6 +12,7 @@ public static class DependencyInjectionExtension
     public static ServiceProxyBuilder AddServiceProxy<TInterface, TService>(this IServiceCollection services, Action<ServiceProxyBuilder> configure = null, ServiceLifetime lifetime = ServiceLifetime.Transient) where TService : TInterface
     {
         var builder = new ServiceProxyBuilder(services);
+        services.TryAddSingleton<AspectFactory>();
         services.TryAdd(ServiceDescriptor.Describe(typeof(TService), typeof(TService), lifetime));
         if (configure is null)
         {
@@ -22,7 +23,7 @@ public static class DependencyInjectionExtension
             configure(builder);
         }
         services.Add(ServiceDescriptor.Describe(typeof(DispatchProxyBuilder<TInterface, TService>),
-            typeof(DispatchProxyBuilder<TInterface, TService>), lifetime));
+            typeof(DispatchProxyBuilder<TInterface, TService>), ServiceLifetime.Scoped));
         services.Add(ServiceDescriptor.Describe(typeof(TInterface), provider =>
         {
             var proxyBuilder = provider.GetRequiredService<DispatchProxyBuilder<TInterface, TService>>();

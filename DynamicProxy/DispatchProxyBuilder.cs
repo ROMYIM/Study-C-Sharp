@@ -12,16 +12,16 @@ public class DispatchProxyBuilder<TInterface, TInstance> where TInstance : TInte
 {
     private readonly IServiceProvider _serviceProvider;
     
-    private readonly AspectBuilder _aspectBuilder;
+    private readonly AspectFactory _aspectFactory;
 
     private readonly AspectContextFactory _aspectContextFactory;
 
     private readonly TInstance _originalInstance;
 
-    public DispatchProxyBuilder(IServiceProvider serviceProvider)
+    public DispatchProxyBuilder(IServiceProvider serviceProvider, AspectFactory aspectFactory)
     {
         _serviceProvider = serviceProvider;
-        _aspectBuilder = new AspectBuilder(serviceProvider);
+        _aspectFactory = aspectFactory;
         _aspectContextFactory = new AspectContextFactory(serviceProvider);
         _originalInstance = serviceProvider.GetService<TInstance>();
     }
@@ -30,16 +30,7 @@ public class DispatchProxyBuilder<TInterface, TInstance> where TInstance : TInte
     {
         ArgumentNullException.ThrowIfNull(methodInfo);
         var aspectContext = _aspectContextFactory.Create(methodInfo, _originalInstance);
-        var aspectAttribute = methodInfo.GetCustomAttribute<AspectAttribute>();
-        if (aspectAttribute is not null)
-        {
-            foreach (var interceptorType in aspectAttribute.InterceptorTypes)
-            {
-                _aspectBuilder.AddInterceptor(interceptorType);
-            }
-        }
-
-        var aspects = _aspectBuilder.Build();
+        var aspects = _aspectFactory.CreateAspect(methodInfo);
         return new MethodExecutor(aspects, aspectContext);
     }
 

@@ -4,7 +4,7 @@ namespace DynamicProxy.Extensions
 {
     public static class InterceptorExtension
     {
-        public static AspectBuilder AddInterceptor(this AspectBuilder builder, Type interceptorType)
+        internal static AspectBuilder AddInterceptor(this AspectBuilder builder, Type interceptorType)
         {
             ArgumentNullException.ThrowIfNull(builder);
             ArgumentNullException.ThrowIfNull(interceptorType);

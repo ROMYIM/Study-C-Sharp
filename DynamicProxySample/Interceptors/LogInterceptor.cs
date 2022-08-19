@@ -15,11 +15,12 @@ public class LogInterceptor : IInterceptor
     public async Task InvokeAsync(AspectContext context, AspectDelegate next)
     {
         var argument = context.Parameters?[0];
+        // Console.WriteLine($"next before: argument is {argument}, return value is {context.ReturnValue}");
         _logger.LogInformation("next before: argument is {Argument}, return value is {ReturnValue}", argument, context.ReturnValue);
         
         await next(context);
-
-        var returnValue = context.ReturnValue;
+        
+        // Console.WriteLine($"next after: argument is {argument}, return value is {context.ReturnValue}");
         _logger.LogInformation("next after: argument is {Argument}, return value is {ReturnValue}", argument, context.ReturnValue);
     }
 }

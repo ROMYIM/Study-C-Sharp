@@ -8,18 +8,15 @@ using DynamicProxy.Extensions;
 
 namespace DynamicProxy
 {
-    public class AspectBuilder
+    internal readonly struct AspectBuilder
     {
 
         private readonly List<Func<AspectDelegate, AspectDelegate>> _aspects;
             
         public IReadOnlyList<Func<AspectDelegate, AspectDelegate>> Aspects => _aspects;
-        
-        public IServiceProvider Services { get; }
-        
-        public AspectBuilder(IServiceProvider applicationServices)
+
+        public AspectBuilder()
         {
-            Services = applicationServices;
             _aspects = new List<Func<AspectDelegate, AspectDelegate>>();
         }
 

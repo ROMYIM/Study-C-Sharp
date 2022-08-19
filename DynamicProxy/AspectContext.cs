@@ -16,13 +16,13 @@ namespace DynamicProxy
 
         public object?[]? Parameters { get; internal set; }
 
-        public object ReturnValue { get; set; }
+        public object ReturnValue { get; internal set; }
 
-        public MethodInfo Method { get; internal set; }
+        public MethodInfo Method { get; internal init; }
 
-        public object Instance { get; internal set; }
+        public object Instance { get; internal init; }
 
-        public AspectContext(IServiceProvider serviceProvider)
+        internal AspectContext(IServiceProvider serviceProvider)
         {
             ApplicationServices = serviceProvider;
         }
