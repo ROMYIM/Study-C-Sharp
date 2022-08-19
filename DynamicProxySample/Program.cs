@@ -15,10 +15,10 @@ Console.WriteLine("Hello, World!");
 var serviceCollection = new ServiceCollection();
 serviceCollection.AddLogging(builder => builder.AddConsole(options =>
 {
-    options.LogToStandardErrorThreshold = LogLevel.Error;
+    options.LogToStandardErrorThreshold = LogLevel.Information;
 }));
 serviceCollection.AddScoped<TestRepository>();
-serviceCollection.AddServiceProxy<IServiceA, ServiceA>(builder =>
+serviceCollection.AddServiceProxy().ConfigureServiceProxy<IServiceA, ServiceA>(builder =>
 {
     builder.AddInterceptor<LogInterceptor>(ServiceLifetime.Transient);
     builder.AddInterceptor<TransactionalInterceptor>(ServiceLifetime.Scoped);
@@ -29,37 +29,15 @@ serviceCollection.AddSingleton<IFreeSql>(serviceProvider =>
     var builder = new FreeSqlBuilder().UseConnectionString(
         connectionString:
         "data source=121.37.246.101,7433;initial catalog=acip_iplatform;user id=sa;password=sa@acip.cn;persist security info=True;packet size=4096;TrustServerCertificate=true",
-        dataType: DataType.SqlServer);
-        // .UseMonitorCommand(executing: _ => { },(_, s) => logger.LogInformation(s));
+        dataType: DataType.SqlServer)
+        .UseMonitorCommand(executing: _ => { },(_, s) => logger.LogInformation(s));
     return builder.Build();
 });
 serviceCollection.AddScoped<UnitOfWorkManager>();
 
 var provider = serviceCollection.BuildServiceProvider();
-var service = provider.GetRequiredService<ServiceA>();
+var service = provider.GetRequiredService<IServiceA>();
 
-var method = typeof(ServiceA).GetMethod(nameof(ServiceA.TestDbAsync));
-// var @delegate = method!.CreateDelegate(typeof(Func<int, int>), service);
-
-var stopWatch = new Stopwatch();
-var number = 3;
-
-stopWatch.Restart();
-service.Test(ref number);
-stopWatch.Stop();
-Console.WriteLine(stopWatch.ElapsedMilliseconds);
-
-// stopWatch.Restart();
-// @delegate.DynamicInvoke(number);
-// stopWatch.Stop();
-// Console.WriteLine(stopWatch.ElapsedMilliseconds);
-
-stopWatch.Restart();
-var arguments = new object[] { number };
-method?.Invoke(obj: service, parameters: arguments);
-stopWatch.Stop();
-Console.WriteLine(stopWatch.ElapsedMilliseconds);
-
-
+await service.TestDbAsync(6, "a");
 
 await Task.Delay(TimeSpan.FromSeconds(3));

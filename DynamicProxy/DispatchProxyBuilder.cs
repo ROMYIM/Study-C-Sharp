@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DynamicProxy.Attributes;
-using DynamicProxy.Extensions;
 using DynamicProxy.Proxies;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DynamicProxy;
 
-public class DispatchProxyBuilder<TInterface, TInstance> where TInstance : TInterface
+internal class DispatchProxyBuilder<TService, TInstance> : IProxyBuilder where TInstance : TService
 {
     private readonly IServiceProvider _serviceProvider;
     
@@ -34,21 +32,31 @@ public class DispatchProxyBuilder<TInterface, TInstance> where TInstance : TInte
         return new MethodExecutor(aspects, aspectContext);
     }
 
-    public TInterface Build()
+    public TService Build()
     {
-        var proxy = DispatchProxy.Create<TInterface, DefaultDispatchProxy<TInterface>>();
+        var proxy = DispatchProxy.Create<TService, DefaultDispatchProxy<TService>>();
         var methodExecutors = new Dictionary<MethodInfo, MethodExecutor>();
-        var methodInfos = typeof(TInterface).GetMethods(BindingFlags.Instance | BindingFlags.Public);
+        var methodInfos = typeof(TService).GetMethods(BindingFlags.Instance | BindingFlags.Public);
         foreach (var methodInfo in methodInfos)
         {
             methodExecutors.TryAdd(methodInfo, BuildMethodExecutor(methodInfo));
         }
-        if (proxy is DefaultDispatchProxy<TInterface> dispatchProxy)
+        if (proxy is DefaultDispatchProxy<TService> dispatchProxy)
         {
             dispatchProxy.OriginalInstance = _originalInstance;
             dispatchProxy.Executors = methodExecutors;
             dispatchProxy.ServiceProvider = _serviceProvider;
         }
         return proxy;
+    }
+
+    public object BuildProxy(Type serviceType)
+    {
+        if (typeof(TService) != serviceType)
+        {
+            throw new ArgumentException("the argument is not equal to generic type", nameof(serviceType),
+                new NotSupportedException("builder can not build the proxy of serviceType"));
+        }
+        return Build();
     }
 }

@@ -1,35 +1,48 @@
 ﻿using System;
 using System.Reflection;
 using DynamicProxy.Attributes;
+using DynamicProxy.Options;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace DynamicProxy.Extensions;
 
 public static class DependencyInjectionExtension
 {
-
-    public static ServiceProxyBuilder AddServiceProxy<TInterface, TService>(this IServiceCollection services, Action<ServiceProxyBuilder> configure = null, ServiceLifetime lifetime = ServiceLifetime.Transient) where TService : TInterface
+    public static ServiceProxyBuilder AddServiceProxy(this IServiceCollection services)
     {
-        var builder = new ServiceProxyBuilder(services);
-        services.TryAddSingleton<AspectFactory>();
-        services.TryAdd(ServiceDescriptor.Describe(typeof(TService), typeof(TService), lifetime));
-        if (configure is null)
+        return new ServiceProxyBuilder(services);
+    }
+
+    public static ServiceProxyBuilder ConfigurePoxy(this ServiceProxyBuilder serviceProxyBuilder, Action<ProxyOptions> configure)
+    {
+        var proxyOptions = new ProxyOptions();
+        configure(proxyOptions);
+        serviceProxyBuilder.AddOptions(proxyOptions);
+        serviceProxyBuilder.Build(proxyOptions.ServiceType);
+        return serviceProxyBuilder;
+    }
+
+    public static ServiceProxyBuilder ConfigureServiceProxy(this ServiceProxyBuilder serviceProxyBuilder,
+        Type serviceType, Type instanceType, Action<ServiceProxyBuilder> configure = null,
+        ServiceLifetime lifetime = ServiceLifetime.Transient)
+    {
+        var builder = serviceProxyBuilder.ConfigurePoxy(options =>
         {
-            builder.AddInterceptors<TInterface>(lifetime);
-        }
-        else
-        {
-            configure(builder);
-        }
-        services.Add(ServiceDescriptor.Describe(typeof(DispatchProxyBuilder<TInterface, TService>),
-            typeof(DispatchProxyBuilder<TInterface, TService>), ServiceLifetime.Scoped));
-        services.Add(ServiceDescriptor.Describe(typeof(TInterface), provider =>
-        {
-            var proxyBuilder = provider.GetRequiredService<DispatchProxyBuilder<TInterface, TService>>();
-            return proxyBuilder.Build();
-        }, lifetime));
+            options.ServiceType = serviceType;
+            options.InstanceType = instanceType;
+            options.Lifetime = lifetime;
+        });
+
+        configure?.Invoke(builder);
+
         return builder;
+    }
+
+    public static ServiceProxyBuilder ConfigureServiceProxy<TService, TInstance>(
+        this ServiceProxyBuilder serviceProxyBuilder, Action<ServiceProxyBuilder> configure = null,
+        ServiceLifetime lifetime = ServiceLifetime.Transient) where TInstance : TService
+    {
+        return serviceProxyBuilder.ConfigureServiceProxy(typeof(TService), typeof(TInstance), configure, lifetime);
     }
 
     public static ServiceProxyBuilder AddInterceptor<TInterceptor>(this ServiceProxyBuilder builder, ServiceLifetime interceptorLifeTime)
