@@ -1,4 +1,6 @@
-﻿namespace DynamicProxy;
+﻿using System.Reflection.Emit;
+
+namespace DynamicProxy;
 
 public struct MethodExecutor
 {
@@ -10,6 +12,7 @@ public struct MethodExecutor
     {
         Aspects = aspects;
         Context = context;
+        Context.GenerateInvokeMethod();
     }
 
     public object Execute(object[] args)

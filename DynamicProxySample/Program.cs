@@ -37,7 +37,11 @@ serviceCollection.AddScoped<UnitOfWorkManager>();
 
 var provider = serviceCollection.BuildServiceProvider();
 var service = provider.GetRequiredService<IServiceA>();
+var logger = provider.GetRequiredService<ILogger<Program>>();
 
-await service.TestDbAsync(6, "a");
+var result = service.Test(2);
+logger.LogInformation("result is {Result}", result);
+// service.Test(2);
+
 
 await Task.Delay(TimeSpan.FromSeconds(3));

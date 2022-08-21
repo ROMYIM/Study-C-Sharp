@@ -31,8 +31,16 @@ namespace DynamicProxy
         {
             AspectDelegate next = async context =>
             {
-                context.ReturnValue = context.Method.Invoke(context.Instance, context.Parameters);
-                await context.AwaitReturnAsync();
+                if (context.InvokeInstanceMethod is not null)
+                {
+                    context.ReturnValue = context.InvokeInstanceMethod(context.Instance!, context.Parameters);
+                    context.InstanceMethodExecuted = true;
+                    await context.AwaitReturnAsync();
+                }
+                else
+                {
+                    context.InstanceMethodExecuted = true;
+                }
             };
             
             for (var i = Aspects.Count - 1; i >= 0; i--)

@@ -1,4 +1,5 @@
 ﻿using DynamicProxy;
+using DynamicProxy.Extensions;
 using FreeSql;
 using Microsoft.Extensions.Logging;
 
@@ -18,12 +19,15 @@ public class TransactionalInterceptor : IInterceptor
 
     public async Task InvokeAsync(AspectContext context, AspectDelegate next)
     {
+        _logger.LogInformation("thread id {}", Environment.CurrentManagedThreadId);
         _logger.LogInformation("start transaction");   
         var unitOfWork = _unitOfWorkManager.Begin();
         
         await next(context);
 
-        var returnValue = context.ReturnValue.ToString();
+        _logger.LogInformation("thread id {}", Environment.CurrentManagedThreadId);
+        
+        var returnValue = (await context.GetTrulyReturnValueAsync())?.ToString();
         if (returnValue != "a")
         {
             _logger.LogInformation("transaction rollback");
