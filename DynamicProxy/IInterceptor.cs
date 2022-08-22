@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace DynamicProxy
+﻿namespace DynamicProxy
 {
     public interface IInterceptor
     {

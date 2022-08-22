@@ -4,5 +4,5 @@ namespace DynamicProxy;
 
 public interface IProxyBuilder
 {
-    object BuildProxy(Type serviceType);
+    object? BuildProxy(Type serviceType);
 }

@@ -1,8 +1,6 @@
-﻿using System.Reflection.Emit;
+﻿namespace DynamicProxy;
 
-namespace DynamicProxy;
-
-public struct MethodExecutor
+public readonly struct MethodExecutor
 {
     public AspectDelegate Aspects { get; }
     
@@ -15,7 +13,7 @@ public struct MethodExecutor
         Context.GenerateInvokeMethod();
     }
 
-    public object Execute(object[] args)
+    public object? Execute(object?[] args)
     {
         Context.Parameters = args;
         Aspects(Context);

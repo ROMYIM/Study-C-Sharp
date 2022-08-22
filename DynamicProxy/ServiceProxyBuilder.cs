@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using DynamicProxy.Options;
+﻿using DynamicProxy.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -8,10 +6,8 @@ namespace DynamicProxy;
 
 public class ServiceProxyBuilder : IProxyBuilder
 {
-    private IServiceProvider _provider;
-    
-    public ServiceProxyBuilder():this(new ServiceCollection()) { }
-    
+    private IServiceProvider? _provider;
+
     public ServiceProxyBuilder(IServiceCollection services)
     {
         Services = services;
@@ -41,8 +37,8 @@ public class ServiceProxyBuilder : IProxyBuilder
 
         Services.Add(ServiceDescriptor.Describe(serviceType, provider =>
         {
-            var proxyBuilder = (IProxyBuilder)provider.GetRequiredService(dispatchProxyBuildType);
-            return proxyBuilder.BuildProxy(serviceType);
+            var proxyBuilder = provider.GetRequiredService(dispatchProxyBuildType) as IProxyBuilder;
+            return proxyBuilder?.BuildProxy(serviceType) ?? throw new NotSupportedException($"Proxy builder can not build {serviceType.FullName} proxy");
         }, lifetime));
     }
     
@@ -60,7 +56,7 @@ public class ServiceProxyBuilder : IProxyBuilder
         return typeof(DispatchProxyBuilder<,>).MakeGenericType(serviceType, instanceType);
     }
 
-    public object BuildProxy(Type serviceType)
+    public object? BuildProxy(Type serviceType)
     {
         _provider ??= Services.BuildServiceProvider();
 

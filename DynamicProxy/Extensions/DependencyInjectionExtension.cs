@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using DynamicProxy.Attributes;
 using DynamicProxy.Options;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +23,7 @@ public static class DependencyInjectionExtension
     }
 
     public static ServiceProxyBuilder ConfigureServiceProxy(this ServiceProxyBuilder serviceProxyBuilder,
-        Type serviceType, Type instanceType, Action<ServiceProxyBuilder> configure = null,
+        Type serviceType, Type instanceType, Action<ServiceProxyBuilder>? configure = null,
         ServiceLifetime lifetime = ServiceLifetime.Transient)
     {
         var builder = serviceProxyBuilder.ConfigurePoxy(options =>
@@ -40,7 +39,7 @@ public static class DependencyInjectionExtension
     }
 
     public static ServiceProxyBuilder ConfigureServiceProxy<TService, TInstance>(
-        this ServiceProxyBuilder serviceProxyBuilder, Action<ServiceProxyBuilder> configure = null,
+        this ServiceProxyBuilder serviceProxyBuilder, Action<ServiceProxyBuilder>? configure = null,
         ServiceLifetime lifetime = ServiceLifetime.Transient) where TInstance : TService
     {
         return serviceProxyBuilder.ConfigureServiceProxy(typeof(TService), typeof(TInstance), configure, lifetime);

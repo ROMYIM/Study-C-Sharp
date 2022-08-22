@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 using DynamicProxy.Proxies;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DynamicProxy;
 
-internal class DispatchProxyBuilder<TService, TInstance> : IProxyBuilder where TInstance : TService
+internal class DispatchProxyBuilder<TService, TInstance> : IProxyBuilder where TInstance : notnull, TService
 {
     private readonly IServiceProvider _serviceProvider;
     
@@ -21,7 +19,7 @@ internal class DispatchProxyBuilder<TService, TInstance> : IProxyBuilder where T
         _serviceProvider = serviceProvider;
         _aspectFactory = aspectFactory;
         _aspectContextFactory = new AspectContextFactory(serviceProvider);
-        _originalInstance = serviceProvider.GetService<TInstance>();
+        _originalInstance = serviceProvider.GetRequiredService<TInstance>();
     }
 
     public MethodExecutor BuildMethodExecutor(MethodInfo methodInfo)
@@ -50,7 +48,7 @@ internal class DispatchProxyBuilder<TService, TInstance> : IProxyBuilder where T
         return proxy;
     }
 
-    public object BuildProxy(Type serviceType)
+    public object? BuildProxy(Type serviceType)
     {
         if (typeof(TService) != serviceType)
         {

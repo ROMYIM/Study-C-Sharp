@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DynamicProxy.Extensions
+﻿namespace DynamicProxy.Extensions
 {
     public static class InterceptorExtension
     {

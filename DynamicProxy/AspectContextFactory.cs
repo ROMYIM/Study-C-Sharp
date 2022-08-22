@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using DynamicProxy.Features;
+﻿using System.Reflection;
 
 namespace DynamicProxy
 {

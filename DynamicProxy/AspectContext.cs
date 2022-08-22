@@ -1,7 +1,5 @@
-using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace DynamicProxy
 {
@@ -10,7 +8,7 @@ namespace DynamicProxy
 
         public IServiceProvider ApplicationServices { get; }
 
-        public object[]? Parameters { get; internal set; }
+        public object?[] Parameters { get; internal set; }
 
         public object? ReturnValue { get; internal set; }
 
