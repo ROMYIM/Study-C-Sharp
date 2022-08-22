@@ -47,7 +47,8 @@ namespace DynamicProxy.Extensions
         {
             if (!context.InstanceMethodExecuted)
             {
-                throw new InvalidOperationException("The instance's method has not executed yet!");
+                // throw new InvalidOperationException("The instance's method has not executed yet!");
+                return null;
             }
 
             if (context.IsAsync(out var hasTrulyReturnValue))

@@ -13,7 +13,7 @@ public readonly struct MethodExecutor
         Context.GenerateInvokeMethod();
     }
 
-    public object? Execute(object?[] args)
+    public object? Execute(object?[]? args)
     {
         Context.Parameters = args;
         Aspects(Context);
