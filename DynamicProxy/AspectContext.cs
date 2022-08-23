@@ -36,7 +36,12 @@ namespace DynamicProxy
                 throw new InvalidOperationException("the methodInfo is null");
             }
 
-            InvokeInstanceMethod = BuildExecuteMethod<object>(Method, Method.GetParameters());
+            var parameterInfos = Method.GetParameters();
+            if (parameterInfos.Any(info => info.ParameterType.IsByRef))
+            {
+                return;
+            }
+            InvokeInstanceMethod = BuildExecuteMethod<object>(Method, parameterInfos);
         }
         
         private static (MethodCallExpression, ParameterExpression[]?) BuildLambdaExpressionParameters<T>(MethodInfo methodInfo, ParameterInfo[] parameters)
@@ -53,11 +58,16 @@ namespace DynamicProxy
                 var parameterType = parameters[i].ParameterType;
                 if (parameterType.IsByRef)
                 {
+                    // var getParameterCall = Expression.ArrayIndex(parametersArg, Expression.Constant(i));
+                    // methodArguments[i] = Expression.Convert(getParameterCall, parameterType.GetElementType()!);
                     throw new NotSupportedException("delegate is not supported to reference argument");
                 }
 
-                var getParameterCall = Expression.ArrayIndex(parametersArg, Expression.Constant(i));
-                methodArguments[i] = Expression.Convert(getParameterCall, parameterType);
+                else
+                {
+                    var getParameterCall = Expression.ArrayIndex(parametersArg, Expression.Constant(i));
+                    methodArguments[i] = Expression.Convert(getParameterCall, parameterType);
+                }
             }
 
             Expression originalInstanceArg = instanceArg;
