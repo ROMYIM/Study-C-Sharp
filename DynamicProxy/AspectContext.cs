@@ -58,9 +58,8 @@ namespace DynamicProxy
                 var parameterType = parameters[i].ParameterType;
                 if (parameterType.IsByRef)
                 {
-                    // var getParameterCall = Expression.ArrayIndex(parametersArg, Expression.Constant(i));
-                    // methodArguments[i] = Expression.Convert(getParameterCall, parameterType.GetElementType()!);
-                    throw new NotSupportedException("delegate is not supported to reference argument");
+                    var getParameterCall = Expression.ArrayIndex(parametersArg, Expression.Constant(i));
+                    methodArguments[i] = Expression.Convert(getParameterCall, parameterType.MakeByRefType());
                 }
 
                 else

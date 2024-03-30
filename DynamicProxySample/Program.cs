@@ -21,26 +21,28 @@ serviceCollection.AddScoped<TestRepository>();
 serviceCollection.AddServiceProxy().ConfigureServiceProxy<IServiceA, ServiceA>(builder =>
 {
     builder.AddInterceptor<LogInterceptor>(ServiceLifetime.Transient);
-    builder.AddInterceptor<TransactionalInterceptor>(ServiceLifetime.Scoped);
+    // builder.AddInterceptor<TransactionalInterceptor>(ServiceLifetime.Scoped);
 });
-serviceCollection.AddSingleton<IFreeSql>(serviceProvider =>
-{
-    var logger = serviceProvider.GetRequiredService<ILogger<IFreeSql>>();
-    var builder = new FreeSqlBuilder().UseConnectionString(
-        connectionString:
-        "data source=121.37.246.101,7433;initial catalog=acip_iplatform;user id=sa;password=sa@acip.cn;persist security info=True;packet size=4096;TrustServerCertificate=true",
-        dataType: DataType.SqlServer)
-        .UseMonitorCommand(executing: _ => { },(_, s) => logger.LogInformation(s));
-    return builder.Build();
-});
-serviceCollection.AddScoped<UnitOfWorkManager>();
+// serviceCollection.AddSingleton<IFreeSql>(serviceProvider =>
+// {
+//     var logger = serviceProvider.GetRequiredService<ILogger<IFreeSql>>();
+//     var builder = new FreeSqlBuilder().UseConnectionString(
+//         connectionString:
+//         "data source=121.37.246.101,7433;initial catalog=acip_iplatform;user id=sa;password=sa@acip.cn;persist security info=True;packet size=4096;TrustServerCertificate=true",
+//         dataType: DataType.SqlServer)
+//         .UseMonitorCommand(executing: _ => { },(_, s) => logger.LogInformation(s));
+//     return builder.Build();
+// });
+// serviceCollection.AddScoped<UnitOfWorkManager>();
 
 var provider = serviceCollection.BuildServiceProvider();
 var service = provider.GetRequiredService<IServiceA>();
 var logger = provider.GetRequiredService<ILogger<Program>>();
 
-var result = service.Test(2);
+var a = 2;
+var result = service.Test(ref a);
 logger.LogInformation("result is {Result}", result);
+logger.LogInformation("a is {A}", a);
 // service.Test(2);
 
 

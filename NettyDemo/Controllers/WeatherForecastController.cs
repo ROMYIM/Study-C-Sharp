@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using DotNetty.Transport.Channels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Models;
 using NettyDemo.Infrastructure.Caches.Abbractions;
-using NettyDemo.Models.Dtos;
 using Zaabee.RabbitMQ.Abstractions;
 
 namespace NettyDemo.Controllers
@@ -39,7 +39,6 @@ namespace NettyDemo.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            var requstId = HttpContext.TraceIdentifier;
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {

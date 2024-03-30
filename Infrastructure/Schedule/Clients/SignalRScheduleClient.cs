@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Schedule.Clients
 {
-    internal class SignalRScheduleClient : IScheduleClient
+    internal sealed class SignalRScheduleClient : IScheduleClient
     {
         private readonly ILogger _logger;
 
@@ -41,7 +41,7 @@ namespace Infrastructure.Schedule.Clients
 
         public HubConnection Connection => _client.Connection;
 
-        public virtual async Task StartAsync(CancellationToken token = default)
+        public async Task StartAsync(CancellationToken token = default)
         {
             var scheduleOptions = _scheduleOptions.Value;
             foreach (var jobOptions in scheduleOptions.JobOptionsMap.Values)
@@ -55,7 +55,7 @@ namespace Infrastructure.Schedule.Clients
             }
         }
 
-        public virtual async Task StopAsync(CancellationToken token = default)
+        public async Task StopAsync(CancellationToken token = default)
         {
             if (Connection.State != HubConnectionState.Disconnected)
             {
@@ -64,7 +64,7 @@ namespace Infrastructure.Schedule.Clients
             }
         }
         
-        public virtual async Task CreateJobAsync(JobInfo jobInfo, CancellationToken token = default)
+        public async Task CreateJobAsync(JobInfo jobInfo, CancellationToken token = default)
         {
             if (Connection.State == HubConnectionState.Disconnected)
             {
@@ -87,7 +87,7 @@ namespace Infrastructure.Schedule.Clients
             _logger.LogCritical("连接断开。无法回传结果");
         }
 
-        protected virtual IDisposable RegisterJobExecutor(JobOptions jobOptions)
+        private IDisposable RegisterJobExecutor(JobOptions jobOptions)
         {
             var jobExecutorType = _defaultJobExecutorType.MakeGenericType(jobOptions.ExecutorType);
             var jobExecutor = (IJobExecutor) _services.GetRequiredService(jobExecutorType);

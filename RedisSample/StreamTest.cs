@@ -31,7 +31,7 @@ namespace RedisSample
             return await _db.StreamCreateConsumerGroupAsync(ZikeyStream, ZikeyGroup, StreamPosition.NewMessages);
         }
 
-        public async Task QueryConusmerGroupInfoAsync()
+        public async Task QueryConsumerGroupInfoAsync()
         {
             var groupInfo = await _db.StreamGroupInfoAsync(ZikeyStream);
             System.Console.WriteLine(JsonSerializer.Serialize(groupInfo, new JsonSerializerOptions
