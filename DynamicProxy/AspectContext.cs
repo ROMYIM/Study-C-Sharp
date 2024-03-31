@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -5,7 +6,8 @@ namespace DynamicProxy
 {
     public class AspectContext
     {
-
+        private static readonly ConcurrentDictionary<MethodInfo, Lazy<MethodExecute>> methodExecutes = new();
+        
         public IServiceProvider ApplicationServices { get; }
 
         public object?[] Parameters { get; internal set; }
@@ -18,9 +20,9 @@ namespace DynamicProxy
 
         public bool InstanceMethodExecuted { get; internal set; }
 
-        internal delegate object? MethodExecute(object target, object?[]? parameters);
+        internal delegate object? MethodExecute(object target, params object?[]? parameters);
  
-        private delegate void VoidMethodExecute(object target, object?[]? parameters);
+        private delegate void VoidMethodExecute(object target, params object?[]? parameters);
         
         internal MethodExecute? InvokeInstanceMethod { get; set; }
 
@@ -36,12 +38,13 @@ namespace DynamicProxy
                 throw new InvalidOperationException("the methodInfo is null");
             }
 
-            var parameterInfos = Method.GetParameters();
-            if (parameterInfos.Any(info => info.ParameterType.IsByRef))
+            InvokeInstanceMethod = methodExecutes.GetOrAdd(Method, static info => new Lazy<MethodExecute>(() =>
             {
-                return;
-            }
-            InvokeInstanceMethod = BuildExecuteMethod<object>(Method, parameterInfos);
+                var parameterInfos = info.GetParameters();
+                return BuildExecuteMethod<object>(info, parameterInfos);
+            })).Value;
+
+
         }
         
         private static (MethodCallExpression, ParameterExpression[]?) BuildLambdaExpressionParameters<T>(MethodInfo methodInfo, ParameterInfo[] parameters)

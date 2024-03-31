@@ -64,9 +64,10 @@ public static class DependencyInjectionExtension
         var methods = serviceType.GetMethods(BindingFlags.Instance | BindingFlags.Public);
         foreach (var method in methods)
         {
-            var aspect = method.GetCustomAttribute<AspectAttribute>();
-            if (aspect is null) continue;
-            foreach (var interceptorType in aspect.InterceptorTypes)
+            var aspects = method.GetCustomAttributes()
+                .Where(attribute => attribute.GetType().IsAssignableFrom(typeof(AspectAttribute)))
+                .Cast<AspectAttribute>();
+            foreach (var interceptorType in aspects.SelectMany(aspect => aspect.InterceptorTypes))
             {
                 builder.AddInterceptor(interceptorType, lifetime);
             }

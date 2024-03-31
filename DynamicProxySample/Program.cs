@@ -40,10 +40,12 @@ var service = provider.GetRequiredService<IServiceA>();
 var logger = provider.GetRequiredService<ILogger<Program>>();
 
 var a = 2;
-var result = service.Test(ref a);
-logger.LogInformation("result is {Result}", result);
-logger.LogInformation("a is {A}", a);
+// var result = service.Test(ref a);
+// logger.LogInformation("result is {Result}", result);
+// logger.LogInformation("a is {A}", a);
 // service.Test(2);
 
+await service.TestDbAsync(a, out var name);
+logger.LogInformation("name is {Name}", name);
 
 await Task.Delay(TimeSpan.FromSeconds(3));

@@ -23,7 +23,7 @@ public class ServiceA : IServiceA
         return number;
     }
 
-    public Task<string> TestDbAsync(int id, string name)
+    public Task TestDbAsync(int id, out string name)
     {
         _logger.LogInformation("thread id {}", Environment.CurrentManagedThreadId);
         
@@ -37,6 +37,8 @@ public class ServiceA : IServiceA
         // await _testRepository.UpdateAsync(test);
         
         _logger.LogInformation("thread id {}", Environment.CurrentManagedThreadId);
-        return Task.FromResult(name);
+        name = id.ToString();
+        
+        return Task.CompletedTask;
     }
 }

@@ -5,9 +5,9 @@ namespace DynamicProxySample.Interfaces;
 
 public interface IServiceA
 {
-    [Aspect(typeof(LogInterceptor))]
+    [Aspect<LogInterceptor>]
     public int Test(ref int number);
     
-    [Aspect(typeof(LogInterceptor), typeof(TransactionalInterceptor))]
-    public Task<string> TestDbAsync(int id, string name);
+    [Aspect<LogInterceptor, TransactionalInterceptor>]
+    public Task TestDbAsync(int id, out string name);
 }
